@@ -22,7 +22,7 @@
 //#define VOLTAGE_OFF_SYSTEM 1400
 //#define VOLTAGE_OFF_SYSTEM 700
 
-char Version[] = "PS 24V3.5A v2.02R";
+char Version[] = "PS 14V1AL v1.00  ";
 
 
 Key_Pressed_t pressedKey = 0;
@@ -138,20 +138,25 @@ void MenuPowerSupply(Key_Pressed_t key) //PowerSupply
 	PrintToLCD(itoa(Current_Out));
 	PrintToLCD("mA   ");
 
-	if (key == KEY_VOLT)
-	{
-		Menu_Navigate(MENU_CHILD);
-		Menu_Navigate(MENU_NEXT);
-		Menu_Navigate(MENU_NEXT);
-		Menu_Navigate(MENU_CHILD);
-	}
+
 	if (key == KEY_CURR)
 	{
 		Menu_Navigate(MENU_CHILD);
 		Menu_Navigate(MENU_NEXT);
 		Menu_Navigate(MENU_CHILD);
 	}
-
+    if (key == KEY_NEXT)
+    {
+    	DAC_VoltageCounter = DAC_VoltageCounter+DAC_step;
+    	if (DAC_VoltageCounter>4095) DAC_VoltageCounter = 4095;
+    	DAC->DHR12R1 = DAC_VoltageCounter;
+    }
+    if (key == KEY_BACK)
+    {
+    	DAC_VoltageCounter = DAC_VoltageCounter-DAC_step;
+    	if (DAC_VoltageCounter<=0) DAC_VoltageCounter = 0;
+    	DAC->DHR12R1 = DAC_VoltageCounter;
+    }
 
 }
 
@@ -169,7 +174,7 @@ void MenuLoad(Key_Pressed_t key) //Load
     {
 
     	DAC_CurrentCounter = DAC_CurrentCounter+DAC_step;
-    	if (DAC_CurrentCounter>4096) DAC_CurrentCounter = 4096;
+    	if (DAC_CurrentCounter>4095) DAC_CurrentCounter = 4095;
     	DAC->DHR12R2 = DAC_CurrentCounter;
     }
     if (key == KEY_BACK)
@@ -205,7 +210,7 @@ void MenuChargeCC_CV(Key_Pressed_t key)
     if (key == KEY_NEXT)
     {
     	DAC_VoltageCounter = DAC_VoltageCounter+DAC_step;
-    	if (DAC_VoltageCounter>4096) DAC_VoltageCounter = 4096;
+    	if (DAC_VoltageCounter>4095) DAC_VoltageCounter = 4095;
     	DAC->DHR12R1 = DAC_VoltageCounter;
     }
     if (key == KEY_BACK)
@@ -1980,6 +1985,12 @@ int main(void)
 		Menu_Navigate(&Menu_8_1);
 	else Menu_Navigate(&Menu_2_1);
 	uint8_t FineKeyStatus = 0;
+	DAC_step = DAC_STEP_FINE;
+	//Light on
+	GPIOB->BSRR =  GPIO_BSRR_BS8;// ON
+	FineKeyStatus = 1;
+	DAC_CurrentCounter = 3000;
+	DAC_VoltageCounter = 1000;
     while(1)
     {
 
