@@ -1448,63 +1448,63 @@ OUTPUT(BMS.elf elf32-littlearm)
  .debug_ranges  0x00000cc0       0xd8 ..\obj\Eeprom.o
  .debug_ranges  0x00000d98       0x48 ..\obj\usart.o
 
-.debug_line     0x00000000     0x583c
- .debug_line    0x00000000      0x140 ..\obj\MicroMenu2_1.o
- .debug_line    0x00000140      0xb63 ..\obj\stm32f10x_tim.o
- .debug_line    0x00000ca3       0xc4 ..\obj\startup_stm32f10x_ld_vl.o
- .debug_line    0x00000d67      0x389 ..\obj\General.o
- .debug_line    0x000010f0      0x249 ..\obj\system_stm32f10x.o
- .debug_line    0x00001339      0x4e3 ..\obj\hd44780_driver.o
- .debug_line    0x0000181c      0x40e ..\obj\stm32f10x_gpio.o
- .debug_line    0x00001c2a      0xf12 ..\obj\main.o
- .debug_line    0x00002b3c      0x533 ..\obj\ADC.o
- .debug_line    0x0000306f      0x505 ..\obj\stm32f10x_rcc.o
- .debug_line    0x00003574      0x399 ..\obj\Init_.o
- .debug_line    0x0000390d      0x585 ..\obj\stm32f10x_adc.o
- .debug_line    0x00003e92      0x52c ..\obj\stm32f10x_usart.o
- .debug_line    0x000043be      0x504 ..\obj\Lib.o
- .debug_line    0x000048c2      0x353 ..\obj\stm32f10x_dma.o
- .debug_line    0x00004c15      0x29e ..\obj\misc.o
- .debug_line    0x00004eb3      0x627 ..\obj\Eeprom.o
- .debug_line    0x000054da      0x362 ..\obj\usart.o
+.debug_line     0x00000000     0x5659
+ .debug_line    0x00000000      0x132 ..\obj\MicroMenu2_1.o
+ .debug_line    0x00000132      0xb47 ..\obj\stm32f10x_tim.o
+ .debug_line    0x00000c79       0xbd ..\obj\startup_stm32f10x_ld_vl.o
+ .debug_line    0x00000d36      0x374 ..\obj\General.o
+ .debug_line    0x000010aa      0x234 ..\obj\system_stm32f10x.o
+ .debug_line    0x000012de      0x4c7 ..\obj\hd44780_driver.o
+ .debug_line    0x000017a5      0x3f2 ..\obj\stm32f10x_gpio.o
+ .debug_line    0x00001b97      0xee1 ..\obj\main.o
+ .debug_line    0x00002a78      0x509 ..\obj\ADC.o
+ .debug_line    0x00002f81      0x4e9 ..\obj\stm32f10x_rcc.o
+ .debug_line    0x0000346a      0x376 ..\obj\Init_.o
+ .debug_line    0x000037e0      0x569 ..\obj\stm32f10x_adc.o
+ .debug_line    0x00003d49      0x510 ..\obj\stm32f10x_usart.o
+ .debug_line    0x00004259      0x4f6 ..\obj\Lib.o
+ .debug_line    0x0000474f      0x337 ..\obj\stm32f10x_dma.o
+ .debug_line    0x00004a86      0x282 ..\obj\misc.o
+ .debug_line    0x00004d08      0x60b ..\obj\Eeprom.o
+ .debug_line    0x00005313      0x346 ..\obj\usart.o
 
-.debug_str      0x00000000     0x464b
- .debug_str     0x00000000      0x1b9 ..\obj\MicroMenu2_1.o
-                                0x1de (size before relaxing)
- .debug_str     0x000001b9      0xca3 ..\obj\stm32f10x_tim.o
-                                0xda4 (size before relaxing)
- .debug_str     0x00000e5c       0xd8 ..\obj\startup_stm32f10x_ld_vl.o
-                                0x140 (size before relaxing)
- .debug_str     0x00000f34      0x663 ..\obj\General.o
-                                0x79a (size before relaxing)
- .debug_str     0x00001597      0x187 ..\obj\system_stm32f10x.o
-                                0x2a1 (size before relaxing)
- .debug_str     0x0000171e      0x24a ..\obj\hd44780_driver.o
-                                0x35e (size before relaxing)
- .debug_str     0x00001968      0x38c ..\obj\stm32f10x_gpio.o
-                                0x4e0 (size before relaxing)
- .debug_str     0x00001cf4      0xc07 ..\obj\main.o
-                               0x155e (size before relaxing)
- .debug_str     0x000028fb      0x68c ..\obj\ADC.o
-                               0x1105 (size before relaxing)
- .debug_str     0x00002f87      0x442 ..\obj\stm32f10x_rcc.o
-                                0x634 (size before relaxing)
- .debug_str     0x000033c9       0xbe ..\obj\Init_.o
-                                0x8ea (size before relaxing)
- .debug_str     0x00003487      0x491 ..\obj\stm32f10x_adc.o
-                                0x6c2 (size before relaxing)
- .debug_str     0x00003918      0x44d ..\obj\stm32f10x_usart.o
-                                0x657 (size before relaxing)
- .debug_str     0x00003d65      0x101 ..\obj\Lib.o
-                                0x226 (size before relaxing)
- .debug_str     0x00003e66      0x164 ..\obj\stm32f10x_dma.o
-                                0x388 (size before relaxing)
- .debug_str     0x00003fca      0x1b7 ..\obj\misc.o
-                                0x390 (size before relaxing)
- .debug_str     0x00004181      0x3aa ..\obj\Eeprom.o
-                                0xad7 (size before relaxing)
- .debug_str     0x0000452b      0x120 ..\obj\usart.o
-                                0x779 (size before relaxing)
+.debug_str      0x00000000     0x45cd
+ .debug_str     0x00000000      0x1b2 ..\obj\MicroMenu2_1.o
+                                0x1d7 (size before relaxing)
+ .debug_str     0x000001b2      0xc9c ..\obj\stm32f10x_tim.o
+                                0xd9d (size before relaxing)
+ .debug_str     0x00000e4e       0xd1 ..\obj\startup_stm32f10x_ld_vl.o
+                                0x139 (size before relaxing)
+ .debug_str     0x00000f1f      0x65c ..\obj\General.o
+                                0x793 (size before relaxing)
+ .debug_str     0x0000157b      0x180 ..\obj\system_stm32f10x.o
+                                0x29a (size before relaxing)
+ .debug_str     0x000016fb      0x243 ..\obj\hd44780_driver.o
+                                0x357 (size before relaxing)
+ .debug_str     0x0000193e      0x385 ..\obj\stm32f10x_gpio.o
+                                0x4d9 (size before relaxing)
+ .debug_str     0x00001cc3      0xc00 ..\obj\main.o
+                               0x1557 (size before relaxing)
+ .debug_str     0x000028c3      0x685 ..\obj\ADC.o
+                               0x10fe (size before relaxing)
+ .debug_str     0x00002f48      0x43b ..\obj\stm32f10x_rcc.o
+                                0x62d (size before relaxing)
+ .debug_str     0x00003383       0xb7 ..\obj\Init_.o
+                                0x8e3 (size before relaxing)
+ .debug_str     0x0000343a      0x48a ..\obj\stm32f10x_adc.o
+                                0x6bb (size before relaxing)
+ .debug_str     0x000038c4      0x446 ..\obj\stm32f10x_usart.o
+                                0x650 (size before relaxing)
+ .debug_str     0x00003d0a       0xfa ..\obj\Lib.o
+                                0x21f (size before relaxing)
+ .debug_str     0x00003e04      0x15d ..\obj\stm32f10x_dma.o
+                                0x381 (size before relaxing)
+ .debug_str     0x00003f61      0x1b0 ..\obj\misc.o
+                                0x389 (size before relaxing)
+ .debug_str     0x00004111      0x3a3 ..\obj\Eeprom.o
+                                0xad0 (size before relaxing)
+ .debug_str     0x000044b4      0x119 ..\obj\usart.o
+                                0x772 (size before relaxing)
 
 .comment        0x00000000       0x70
  .comment       0x00000000       0x70 ..\obj\MicroMenu2_1.o
