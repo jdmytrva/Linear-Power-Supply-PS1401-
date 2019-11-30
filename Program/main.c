@@ -1176,7 +1176,7 @@ void MenuCalibration_CURRENT_Out(Key_Pressed_t key)
 	PrintToLCD(itoa(CalibrationData.CalibrationValueForCurrent));
 	PrintToLCD("   ");
 	lcd_set_xy(0,1);
-	PrintToLCD(itoa(Current));
+	PrintToLCD(itoa(Current_Out));
 	PrintToLCD("mA  ");
 }
 void MenuCalibration_CURRENT_Load(Key_Pressed_t key)
@@ -1190,7 +1190,7 @@ void MenuCalibration_CURRENT_Load(Key_Pressed_t key)
 	PrintToLCD(itoa(CalibrationData.CalibrationValueForCurrent1));
 	PrintToLCD("   ");
 	lcd_set_xy(0,1);
-	PrintToLCD(itoa(Current));
+	PrintToLCD(itoa(Current_load));
 	PrintToLCD("mA  ");
 }
 void MenuCalibration_VoltagePS(Key_Pressed_t key)
@@ -1211,8 +1211,8 @@ void MenuCalibration_VoltageOut(Key_Pressed_t key)
 {
 	EnterInMenu_Status=1;
 	OUT_ON();
-	if (key == KEY_NEXT) CalibrationData.CalibrationValueForVoltage1++;
-	if (key == KEY_BACK) CalibrationData.CalibrationValueForVoltage1--;
+	if (key == KEY_NEXT) CalibrationData.CalibrationValueForVoltage1 = CalibrationData.CalibrationValueForVoltage1+10;
+	if (key == KEY_BACK) CalibrationData.CalibrationValueForVoltage1 = CalibrationData.CalibrationValueForVoltage1-10;
 
 	lcd_set_xy(0,0);
 	PrintToLCD(itoa(CalibrationData.CalibrationValueForVoltage1));
@@ -1991,6 +1991,8 @@ int main(void)
 	FineKeyStatus = 1;
 	DAC_CurrentCounter = 3000;
 	DAC_VoltageCounter = 1000;
+	DAC->DHR12R2 = DAC_CurrentCounter;
+	DAC->DHR12R1 = DAC_VoltageCounter;
     while(1)
     {
 
