@@ -22,7 +22,7 @@
 //#define VOLTAGE_OFF_SYSTEM 1400
 //#define VOLTAGE_OFF_SYSTEM 700
 
-char Version[] = "PS 14V1AL v1.00  ";
+char Version[] = "PSL 14V1AL v1.00T";
 
 
 Key_Pressed_t pressedKey = 0;
@@ -105,6 +105,14 @@ uint8_t ChargedStatus = 1;
 uint8_t BATERYSTATUS = 0;
 uint32_t ChargeDurationSec;
 uint32_t SelectedOptionValue;
+
+typedef enum FineKeyStatus_S
+{
+	FINE_KEY_OFF = 0,
+	FINE_KEY_ON
+}FineKeyState_t;
+
+FineKeyState_t FineKeyState;
 
 uint32_t timer_tmp = 0;
 void Delay_ms(volatile uint32_t value)
@@ -1984,11 +1992,11 @@ int main(void)
 	else if (SettingsData.Option1 == 7)
 		Menu_Navigate(&Menu_8_1);
 	else Menu_Navigate(&Menu_2_1);
-	uint8_t FineKeyStatus = 0;
+	//fine Key init
+	FineKeyState = FINE_KEY_ON;
 	DAC_step = DAC_STEP_FINE;
 	//Light on
 	GPIOB->BSRR =  GPIO_BSRR_BS8;// ON
-	FineKeyStatus = 1;
 	DAC_CurrentCounter = 3000;
 	DAC_VoltageCounter = 1000;
 	DAC->DHR12R2 = DAC_CurrentCounter;
@@ -2016,19 +2024,16 @@ int main(void)
 				Menu_Navigate(MENU_CHILD);
 				break;
 			case KEY_FINE:
-				if (FineKeyStatus == 0)
+				if (FineKeyState == FINE_KEY_OFF)
 				{
 					DAC_step = DAC_STEP_FINE;
-					//Light on
 					GPIOB->BSRR =  GPIO_BSRR_BS8;// ON
-					FineKeyStatus = 1;
+					FineKeyState = FINE_KEY_ON;
 				}
 				else
 				{
 					DAC_step = DAC_STEP_NORMAL;
-					//Light OFF
-					FineKeyStatus = 0;
-
+					FineKeyState = FINE_KEY_OFF;
 					GPIOB->BSRR =  GPIO_BSRR_BR8;//Off
 				}
 
