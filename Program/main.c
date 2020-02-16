@@ -126,8 +126,8 @@ void Delay_ms(volatile uint32_t value)
 
 
 
-#define DAC_STEP_FINE 20
-#define DAC_STEP_NORMAL 200
+#define DAC_STEP_FINE 2
+#define DAC_STEP_NORMAL 20
 uint16_t DAC_step = DAC_STEP_NORMAL;
 //////MENU FUNCTIONS ///////////////MENU FUNCTIONS ///////////////MENU FUNCTIONS /////////
 void Generic_Write(char* Text)
@@ -143,7 +143,7 @@ void MenuPowerSupply(Key_Pressed_t key) //PowerSupply
 	PrintToLCD(itoa_koma(U_OUT,2));
 	PrintToLCD("V  ");
 	lcd_set_xy(7,0);
-	PrintToLCD(itoa(Current_Out));
+	PrintToLCD(itoa(Current_load));
 	PrintToLCD("mA   ");
 
 
@@ -181,21 +181,21 @@ void MenuLoad(Key_Pressed_t key) //Load
     if (key == KEY_NEXT)
     {
 
-    	DAC_CurrentCounter = DAC_CurrentCounter+DAC_step;
+    	DAC_CurrentCounter = DAC_CurrentCounter+DAC_step*13;
     	if (DAC_CurrentCounter>4095) DAC_CurrentCounter = 4095;
     	DAC->DHR12R2 = DAC_CurrentCounter;
     }
     if (key == KEY_BACK)
     {
-    	DAC_CurrentCounter = DAC_CurrentCounter-DAC_step;
+    	DAC_CurrentCounter = DAC_CurrentCounter-DAC_step*13;
     	if (DAC_CurrentCounter<=0) DAC_CurrentCounter = 0;
     	DAC->DHR12R2 = DAC_CurrentCounter;
     }
 	lcd_set_xy(0,0);
-	PrintToLCD(itoa_koma(U_OUT,1));
+	PrintToLCD(itoa_koma(U_OUT,2));
 	PrintToLCD("V  ");
 	lcd_set_xy(5,0);
-	PrintToLCD(itoa(Current_Out));
+	PrintToLCD(itoa(Current_load));
 	PrintToLCD("mA   ");
 
 

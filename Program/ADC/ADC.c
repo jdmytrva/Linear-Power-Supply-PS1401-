@@ -100,7 +100,7 @@ void init_timer3()
 
 
   NVIC_EnableIRQ(TIM3_IRQn);
-  NVIC_SetPriority(TIM3_IRQn, 2);
+  NVIC_SetPriority(TIM3_IRQn, 3);
 }
 void TIM3_IRQHandler()
 {
