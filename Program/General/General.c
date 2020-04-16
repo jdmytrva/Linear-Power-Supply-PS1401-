@@ -60,13 +60,13 @@ struct StructCalibrationValuetoSaveInFlash CalibrationDataFactory=
 		ADDRESS_FLASH_CALIBRATTION+4,
 		0,//Calibration0ValueForCurrent1
 		ADDRESS_FLASH_CALIBRATTION+8,
-		25,//CalibrationValueForCurrent
+		279,//CalibrationValueForCurrent x1
 		ADDRESS_FLASH_CALIBRATTION+12,
-		25,//CalibrationValueForCurrent1
+		59,//CalibrationValueForCurrent1 x50
 		ADDRESS_FLASH_CALIBRATTION+16,
-		1678,//CalibrationValueForVoltage
+		1331,//CalibrationValueForVoltage
 		ADDRESS_FLASH_CALIBRATTION+20,
-		1678,//CalibrationValueForVoltage1
+		1245,//CalibrationValueForVoltage1 use
 		ADDRESS_FLASH_CALIBRATTION+24,
 		1331,//CalibrationValueForVoltage2
 		ADDRESS_FLASH_CALIBRATTION+28,
@@ -170,6 +170,7 @@ struct StructValuetoSaveInFlashWhenPowerOFF SaveDataWhenPowerOffFactory=
 volatile uint16_t U_OUT_ForSetResistance=0;
 volatile int16_t Current_load = 0;
 volatile int16_t Current_Out = 0;
+volatile int32_t Temperature_Out = 0;
 
 
 void WriteInLOG(char  str [17])

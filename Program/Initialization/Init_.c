@@ -8,6 +8,9 @@ void Initialization(void)
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);
 
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO, ENABLE);
+	AFIO->MAPR|=AFIO_MAPR_SWJ_CFG_JTAGDISABLE; //Отключили JTAG, SWD включен
+
 	InitTimer2ForDelay();
 	InitLCD();
 	USART1Init();
@@ -47,30 +50,30 @@ void Init_Out(void)
 	GPIOA->CRL &= ~GPIO_CRL_CNF1;
 
 	*/
-//Out
+//Relay
 	GPIOB->CRL &= ~GPIO_CRL_MODE0;
 	GPIOB->CRL &= ~GPIO_CRL_CNF0;
 	GPIOB->CRL |=  GPIO_CRL_MODE0_1;
 	GPIOB->CRL &= ~GPIO_CRL_CNF0;
-//Load
+//Out
 	GPIOB->CRL &= ~GPIO_CRL_MODE1;
 	GPIOB->CRL &= ~GPIO_CRL_CNF1;
 	GPIOB->CRL |=  GPIO_CRL_MODE1_1;
 	GPIOB->CRL &= ~GPIO_CRL_CNF1;
 
-//led
-	//GPIOA->CRH &= ~GPIO_CRH_MODE8;
-	//GPIOA->CRH &= ~GPIO_CRH_CNF8;
-	//GPIOA->CRH |=  GPIO_CRH_MODE8_1;
-	//GPIOA->CRH &= ~GPIO_CRH_CNF8;
-//led
+//led OUT
+	GPIOA->CRL &= ~GPIO_CRL_MODE0;
+	GPIOA->CRL &= ~GPIO_CRL_CNF0;
+	GPIOA->CRL |=  GPIO_CRL_MODE0_1;
+	GPIOA->CRL &= ~GPIO_CRL_CNF0;
+
 	//GPIOA->CRH &= ~GPIO_CRH_MODE11;
 	//GPIOA->CRH &= ~GPIO_CRH_CNF11;
 	//GPIOA->CRH |=  GPIO_CRH_MODE11_1;
 	//GPIOA->CRH &= ~GPIO_CRH_CNF11;
 
 
-//fan
+//Fine LEd
 	GPIOB->CRH &= ~GPIO_CRH_MODE8;
 	GPIOB->CRH &= ~GPIO_CRH_CNF8;
 	GPIOB->CRH |=  GPIO_CRH_MODE8_1;
@@ -118,6 +121,11 @@ void Init_button(void)
 	GPIOA->CRH |=  GPIO_CRH_CNF8_1;
 	GPIOA->BSRR =  GPIO_BSRR_BS8;
 
+	//Out Button
+	GPIOA->CRH &= ~GPIO_CRH_MODE12;
+	GPIOA->CRH &= ~GPIO_CRH_CNF12;
+	GPIOA->CRH |=  GPIO_CRH_CNF12_1;
+	GPIOA->BSRR =  GPIO_BSRR_BS12;
 }
 
 void init_timer7()
@@ -139,7 +147,7 @@ void init_timer7()
 
 
   NVIC_EnableIRQ(TIM7_IRQn);
-  NVIC_SetPriority(TIM7_IRQn, 2);
+  NVIC_SetPriority(TIM7_IRQn, 5);
 }
 void init_timer16()
 {

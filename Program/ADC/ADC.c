@@ -34,8 +34,9 @@ void ADC1_CH_DMA_Config(void)
 	DMA_InitTypeDef DMA_InitStructure;
 
 	GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_AIN;
-	GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_1 | GPIO_Pin_2 |GPIO_Pin_3|GPIO_Pin_6 ;
+	GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_6 ;
 	GPIO_Init(GPIOA, &GPIO_InitStructure);
+
 
 
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1, ENABLE);
@@ -64,8 +65,8 @@ void ADC1_CH_DMA_Config(void)
 	ADC_InitStructure.ADC_ScanConvMode = ENABLE;
 	ADC_Init(ADC1, &ADC_InitStructure);
 
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_1, 1, ADC_SampleTime_239Cycles5);//I L
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_2, 2, ADC_SampleTime_239Cycles5);//I out
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_1, 1, ADC_SampleTime_239Cycles5);//I x50
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_2, 2, ADC_SampleTime_239Cycles5);//I x1
 	ADC_RegularChannelConfig(ADC1, ADC_Channel_3, 3, ADC_SampleTime_239Cycles5);//U out
 	ADC_RegularChannelConfig(ADC1, ADC_Channel_6, 4, ADC_SampleTime_239Cycles5);//T
 	ADC_TempSensorVrefintCmd(ENABLE);
@@ -100,7 +101,7 @@ void init_timer3()
 
 
   NVIC_EnableIRQ(TIM3_IRQn);
-  NVIC_SetPriority(TIM3_IRQn, 3);
+  NVIC_SetPriority(TIM3_IRQn, 2);
 }
 void TIM3_IRQHandler()
 {
@@ -118,7 +119,7 @@ void TIM3_IRQHandler()
 		DMA_ClearITPendingBit( DMA1_IT_TC1);
 		DMA_ITConfig(DMA1_Channel1, DMA1_IT_TC1, DISABLE);
 		Ut= (RegularConvData[3] * CalibrationData.CalibrationValueForVoltage) / RegularConvData[4];
-		U_PS = MedianFilter2(Ut);
+		Temperature_Out = MedianFilter2(Ut);
 		if (U_PS < 3) U_PS = 0;
 		U_Controller = 491520 / RegularConvData[4];// Uref V/10;  1200 * 4096/ChVref
 		Ut = (RegularConvData[2] * CalibrationData.CalibrationValueForVoltage1) / RegularConvData[4];
@@ -126,14 +127,17 @@ void TIM3_IRQHandler()
 
 		if (U_OUTtmp<3) U_OUTtmp = 0;
 
-		Ut = (RegularConvData[1] * CalibrationData.CalibrationValueForCurrent*10) / RegularConvData[4] ;//  Current A/10
+		Ut = (RegularConvData[1] * CalibrationData.CalibrationValueForCurrent*10) / RegularConvData[4] ;//  x1
 		Current_Out= MedianFilter1(Ut);
 
-		Ut= (RegularConvData[0] * CalibrationData.CalibrationValueForCurrent1*10) / RegularConvData[4] ;//  Current A/10
+		Ut= (RegularConvData[0] * CalibrationData.CalibrationValueForCurrent1*10) / RegularConvData[4] ;//  x50
 		Current_load = middle_of_3Imax(Ut);
 
 
-
+		if (Current_load<=1000)
+			Current = Current_load;
+		else
+			Current = 10*Current_Out;
 
 
 		U_OUT = U_OUTtmp;

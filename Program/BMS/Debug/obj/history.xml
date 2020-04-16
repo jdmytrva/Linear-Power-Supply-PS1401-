@@ -1,59 +1,59 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <history>
-   <processor signature="arm-none-eabi-gcc noversion nomachine -mcpu=cortex-m3 -mthumb -Wall -ffunction-sections -g -Os -c -DUSE_STDPERIPH_DRIVER -D__ASSEMBLY__ -DSTM32F100C8 -DSTM32F10X_MD_VL -I..\..\..\..\..\Users\Vasyl\Documents\GitHub\Linear-Power-Supply-PS1401-\Program\General -I..\..\..\..\..\Users\Vasyl\Documents\GitHub\Linear-Power-Supply-PS1401-\Program\Library -I..\..\..\..\..\Users\Vasyl\Documents\GitHub\Linear-Power-Supply-PS1401-\Program\stm_lib\inc -I..\..\..\..\..\Users\Vasyl\Documents\GitHub\Linear-Power-Supply-PS1401-\Program -I..\..\..\..\..\Users\Vasyl\Documents\GitHub\Linear-Power-Supply-PS1401-\Program\cmsis_boot -I..\..\..\..\..\Users\Vasyl\Documents\GitHub\Linear-Power-Supply-PS1401-\Program\hd44780_driver -I..\..\..\..\..\Users\Vasyl\Documents\GitHub\Linear-Power-Supply-PS1401-\Program\Menu -I..\..\..\..\..\Users\Vasyl\Documents\GitHub\Linear-Power-Supply-PS1401-\Program\Initialization -I..\..\..\..\..\Users\Vasyl\Documents\GitHub\Linear-Power-Supply-PS1401-\Program\Eeprom -I..\..\..\..\..\Users\Vasyl\Documents\GitHub\Linear-Power-Supply-PS1401-\Program\cmsis -I..\..\..\..\..\Users\Vasyl\Documents\GitHub\Linear-Power-Supply-PS1401-\Program\ADC -I..\..\..\..\..\Users\Vasyl\Documents\GitHub\Linear-Power-Supply-PS1401- -I..\..\..\..\..\Users\Vasyl\Documents\GitHub\Linear-Power-Supply-PS1401-\Program\stm_lib -I..\..\..\..\..\Users\Vasyl\Documents\GitHub\Linear-Power-Supply-PS1401-\Program\USART">
-      <target file="Lib.o" lastModified="1704f391d56">
-         <source file="..\..\..\Library\Lib.c" lastModified="16ebbb36e2c"/>
+   <processor signature="arm-none-eabi-gcc noversion nomachine -mcpu=cortex-m3 -mthumb -Wall -ffunction-sections -g -Os -c -DUSE_STDPERIPH_DRIVER -D__ASSEMBLY__ -DSTM32F100C8 -DSTM32F10X_MD_VL -I..\..\..\..\..\Users\SF\Documents\Project\Linear Power Supply (PS1401)\Program\hd44780_driver -I..\..\..\..\..\Users\SF\Documents\Project\Linear Power Supply (PS1401)\Program\Initialization -I..\..\..\..\..\Users\SF\Documents\Project\Linear Power Supply (PS1401)\Program\General -I..\..\..\..\..\Users\SF\Documents\Project\Linear Power Supply (PS1401)\Program\ADC -I..\..\..\..\..\Users\SF\Documents\Project\Linear Power Supply (PS1401)\Program\stm_lib\inc -I..\..\..\..\..\Users\SF\Documents\Project\Linear Power Supply (PS1401)\Program\cmsis -I..\..\..\..\..\Users\SF\Documents\Project\Linear Power Supply (PS1401)\Program\USART -I..\..\..\..\..\Users\SF\Documents\Project\Linear Power Supply (PS1401)\Program\Menu -I..\..\..\..\..\Users\SF\Documents\Project\Linear Power Supply (PS1401)\Program -I..\..\..\..\..\Users\SF\Documents\Project\Linear Power Supply (PS1401)\Program\Eeprom -I..\..\..\..\..\Users\SF\Documents\Project\Linear Power Supply (PS1401)\Program\cmsis_boot -I..\..\..\..\..\Users\SF\Documents\Project\Linear Power Supply (PS1401)\Program\stm_lib -I..\..\..\..\..\Users\SF\Documents\Project\Linear Power Supply (PS1401)\Program\Library -I..\..\..\..\..\Users\SF\Documents\Project\Linear Power Supply (PS1401)">
+      <target file="Lib.o" lastModified="1718467975a">
+         <source file="..\..\..\Library\Lib.c" lastModified="16e18851c92"/>
       </target>
-      <target file="stm32f10x_rcc.o" lastModified="1704f3919ce">
-         <source file="..\..\..\stm_lib\src\stm32f10x_rcc.c" lastModified="16ebbb36e62"/>
+      <target file="stm32f10x_rcc.o" lastModified="1718467943d">
+         <source file="..\..\..\stm_lib\src\stm32f10x_rcc.c" lastModified="16dbb48e33a"/>
       </target>
-      <target file="misc.o" lastModified="1704f391ea2">
-         <source file="..\..\..\stm_lib\src\misc.c" lastModified="16ebbb36e62"/>
+      <target file="misc.o" lastModified="17184679834">
+         <source file="..\..\..\stm_lib\src\misc.c" lastModified="16dbb48e33a"/>
       </target>
-      <target file="hd44780_driver.o" lastModified="1704f39145c">
-         <source file="..\..\..\hd44780_driver\hd44780_driver.c" lastModified="16ebbb36e52"/>
+      <target file="hd44780_driver.o" lastModified="17184678bf0">
+         <source file="..\..\..\hd44780_driver\hd44780_driver.c" lastModified="16e18851c92"/>
       </target>
-      <target file="startup_stm32f10x_ld_vl.o" lastModified="1704f39121d">
-         <source file="..\..\..\cmsis_boot\startup\startup_stm32f10x_ld_vl.c" lastModified="16ebbb36e3c"/>
+      <target file="startup_stm32f10x_ld_vl.o" lastModified="17184678a0b">
+         <source file="..\..\..\cmsis_boot\startup\startup_stm32f10x_ld_vl.c" lastModified="16dbb48e328"/>
       </target>
-      <target file="ADC.o" lastModified="1704f391911">
-         <source file="..\..\..\ADC\ADC.c" lastModified="1704f2d5846"/>
+      <target file="ADC.o" lastModified="171846793a1">
+         <source file="..\..\..\ADC\ADC.c" lastModified="17184677aa9"/>
       </target>
-      <target file="Eeprom.o" lastModified="1704f3924ac">
-         <source file="..\..\..\Eeprom\Eeprom.c" lastModified="16ebbb36e2c"/>
+      <target file="Eeprom.o" lastModified="17184679e01">
+         <source file="..\..\..\Eeprom\Eeprom.c" lastModified="16e18851c83"/>
       </target>
-      <target file="General.o" lastModified="1704f391300">
-         <source file="..\..\..\General\General.c" lastModified="1704f26d495"/>
+      <target file="General.o" lastModified="17184678ad7">
+         <source file="..\..\..\General\General.c" lastModified="17183c7c5a5"/>
       </target>
-      <target file="MicroMenu2_1.o" lastModified="1704f390fa8">
-         <source file="..\..\..\Menu\MicroMenu2_1.c" lastModified="16ebbb36e3c"/>
+      <target file="MicroMenu2_1.o" lastModified="17184678846">
+         <source file="..\..\..\Menu\MicroMenu2_1.c" lastModified="16e18851c92"/>
       </target>
-      <target file="stm32f10x_gpio.o" lastModified="1704f391515">
-         <source file="..\..\..\stm_lib\src\stm32f10x_gpio.c" lastModified="16ebbb36e62"/>
+      <target file="stm32f10x_gpio.o" lastModified="17184678c6d">
+         <source file="..\..\..\stm_lib\src\stm32f10x_gpio.c" lastModified="16dbb48e33a"/>
       </target>
-      <target file="Init_.o" lastModified="1704f391a7c">
-         <source file="..\..\..\Initialization\Init_.c" lastModified="1704f390c84"/>
+      <target file="Init_.o" lastModified="171846794e9">
+         <source file="..\..\..\Initialization\Init_.c" lastModified="171844f4f8e"/>
       </target>
-      <target file="system_stm32f10x.o" lastModified="1704f391384">
-         <source file="..\..\..\cmsis_boot\system_stm32f10x.c" lastModified="16ebbb36e4c"/>
+      <target file="system_stm32f10x.o" lastModified="17184678b34">
+         <source file="..\..\..\cmsis_boot\system_stm32f10x.c" lastModified="16dbb48e328"/>
       </target>
-      <target file="stm32f10x_tim.o" lastModified="1704f3911ad">
-         <source file="..\..\..\stm_lib\src\stm32f10x_tim.c" lastModified="16ebbb36e62"/>
+      <target file="stm32f10x_tim.o" lastModified="171846789bd">
+         <source file="..\..\..\stm_lib\src\stm32f10x_tim.c" lastModified="16dbb48e33a"/>
       </target>
-      <target file="stm32f10x_adc.o" lastModified="1704f391b48">
-         <source file="..\..\..\stm_lib\src\stm32f10x_adc.c" lastModified="16ebbb36e62"/>
+      <target file="stm32f10x_adc.o" lastModified="17184679595">
+         <source file="..\..\..\stm_lib\src\stm32f10x_adc.c" lastModified="16dbb48e33a"/>
       </target>
-      <target file="usart.o" lastModified="1704f3925de">
-         <source file="..\..\..\USART\usart.c" lastModified="16ebbb36e3c"/>
+      <target file="usart.o" lastModified="17184679ecc">
+         <source file="..\..\..\USART\usart.c" lastModified="16e18851c92"/>
       </target>
-      <target file="stm32f10x_dma.o" lastModified="1704f391e05">
-         <source file="..\..\..\stm_lib\src\stm32f10x_dma.c" lastModified="16ebbb36e62"/>
+      <target file="stm32f10x_dma.o" lastModified="171846797d7">
+         <source file="..\..\..\stm_lib\src\stm32f10x_dma.c" lastModified="16dbb48e33a"/>
       </target>
-      <target file="stm32f10x_usart.o" lastModified="1704f391c18">
-         <source file="..\..\..\stm_lib\src\stm32f10x_usart.c" lastModified="16ebbb36e62"/>
+      <target file="stm32f10x_usart.o" lastModified="17184679631">
+         <source file="..\..\..\stm_lib\src\stm32f10x_usart.c" lastModified="16dbb48e33a"/>
       </target>
-      <target file="main.o" lastModified="1704f391836">
-         <source file="..\..\..\main.c" lastModified="1704f35afa4"/>
+      <target file="main.o" lastModified="171846790c2">
+         <source file="..\..\..\main.c" lastModified="171846280c3"/>
       </target>
    </processor>
 </history>

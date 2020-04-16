@@ -22,7 +22,7 @@
 //#define VOLTAGE_OFF_SYSTEM 1400
 //#define VOLTAGE_OFF_SYSTEM 700
 
-char Version[] = "PSL 14V1AL v1.00T";
+char Version[] = "PSL 14V1AL v1.02 ";
 
 
 Key_Pressed_t pressedKey = 0;
@@ -126,8 +126,8 @@ void Delay_ms(volatile uint32_t value)
 
 
 
-#define DAC_STEP_FINE 2
-#define DAC_STEP_NORMAL 20
+#define DAC_STEP_FINE 20
+#define DAC_STEP_NORMAL 200
 uint16_t DAC_step = DAC_STEP_NORMAL;
 //////MENU FUNCTIONS ///////////////MENU FUNCTIONS ///////////////MENU FUNCTIONS /////////
 void Generic_Write(char* Text)
@@ -143,8 +143,8 @@ void MenuPowerSupply(Key_Pressed_t key) //PowerSupply
 	PrintToLCD(itoa_koma(U_OUT,2));
 	PrintToLCD("V  ");
 	lcd_set_xy(7,0);
-	PrintToLCD(itoa(Current_load));
-	PrintToLCD("mA   ");
+	PrintToLCD(itoa(Current));
+	PrintToLCD("mA        ");
 
 
 	if (key == KEY_CURR)
@@ -181,21 +181,21 @@ void MenuLoad(Key_Pressed_t key) //Load
     if (key == KEY_NEXT)
     {
 
-    	DAC_CurrentCounter = DAC_CurrentCounter+DAC_step*13;
+    	DAC_CurrentCounter = DAC_CurrentCounter+DAC_step;
     	if (DAC_CurrentCounter>4095) DAC_CurrentCounter = 4095;
     	DAC->DHR12R2 = DAC_CurrentCounter;
     }
     if (key == KEY_BACK)
     {
-    	DAC_CurrentCounter = DAC_CurrentCounter-DAC_step*13;
+    	DAC_CurrentCounter = DAC_CurrentCounter-DAC_step;
     	if (DAC_CurrentCounter<=0) DAC_CurrentCounter = 0;
     	DAC->DHR12R2 = DAC_CurrentCounter;
     }
 	lcd_set_xy(0,0);
 	PrintToLCD(itoa_koma(U_OUT,2));
-	PrintToLCD("V  ");
-	lcd_set_xy(5,0);
-	PrintToLCD(itoa(Current_load));
+	PrintToLCD("V ");
+	lcd_set_xy(7,0);
+	PrintToLCD(itoa(Current));
 	PrintToLCD("mA   ");
 
 
@@ -1097,10 +1097,9 @@ void MenuDIAGNOSTIC(Key_Pressed_t key)
 	}
 	if(CountShow1 == 3)
 	{
-		LOAD_OFF();
 		OUT_ON();
 		lcd_set_xy(0,0);
-		PrintToLCD("Iout ");
+		PrintToLCD("I(1)");
 		PrintToLCD(itoa(Current));
 		PrintToLCD("mA ");
 		PrintToLCD(itoa((RegularConvData[1])));
@@ -1108,10 +1107,9 @@ void MenuDIAGNOSTIC(Key_Pressed_t key)
 	}
 	if(CountShow1 == 4)
 	{
-		OUT_OFF();
-		LOAD_ON();
+		OUT_ON();
 		lcd_set_xy(0,0);
-		PrintToLCD("I(l) ");
+		PrintToLCD("I(50)");
 		PrintToLCD(itoa(Current_load));
 		PrintToLCD("mA ");
 		PrintToLCD(itoa(RegularConvData[0]));
@@ -1143,11 +1141,12 @@ void MenuDIAGNOSTIC(Key_Pressed_t key)
 
 	if(CountShow1 == 7)
 	{
-		OFF();
+		OUT_ON();
 		lcd_set_xy(0,0);
-		PrintToLCD("Old C=");
-		PrintToLCD(itoa(BatteryCapacityDischargeCurrentAfterPOwerUp/3600));
-		PrintToLCD("mAh          ");
+		PrintToLCD("T=");
+		PrintToLCD(itoa(Temperature_Out));
+		PrintToLCD("C  ");
+		PrintToLCD(itoa(RegularConvData[3]));
 	}
 }
 void MenuCalibration_CURRENT_Out_to_0(Key_Pressed_t key)
@@ -1645,6 +1644,8 @@ void ENC_PollEncoder(void)
 		key = KEY_CURR;
 	else if (!GPIO_ReadInputDataBit(GPIOB, GPIO_Pin_7))
 		key = KEY_FINE;
+	else if (!GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_12))
+		key = KEY_OUT;
 	else
 		key = 0;
 	if (key)
@@ -1709,6 +1710,9 @@ void TIM7_IRQHandler()
     //All_OUT_OFF_When_Power_OFF();
     TimerForReadyMeasurement_ms++;
     //Print_to_USART1_d(Encoder_GetState(),"E:",0);
+    if (U_OUT > 1000) GPIOB->BSRR =  GPIO_BSRR_BS0;
+    if (U_OUT < 900)  GPIOB->BSRR =  GPIO_BSRR_BR0;
+
   }
 }
 
@@ -1884,10 +1888,10 @@ GPIOA->BSRR =  GPIO_BSRR_BS5;//load
 void OUT_OFF()
 {
 	//GPIOB->BSRR =  GPIO_BSRR_BR0;//Diode 1 OUT ON//OFF
-	GPIOB->BSRR =  GPIO_BSRR_BR0;//ON-OFF OUT
+	GPIOB->BSRR =  GPIO_BSRR_BR1;//ON-OFF OUT
 	//GPIOB->BSRR =  GPIO_BSRR_BR1; //load1
 
-	//GPIOA->BSRR =  GPIO_BSRR_BR8;//led out on/off
+	GPIOA->BSRR =  GPIO_BSRR_BR0;//led out on/off
 
 	On_off = 0;
    	//Print_to_USART1_d(On_off,"Select OFF:",0);
@@ -1897,20 +1901,20 @@ void OUT_OFF()
 void OUT_ON()
 {
 	//GPIOB->BSRR =  GPIO_BSRR_BR0;//Diode 1 OUT ON//OFF
-	GPIOB->BSRR =  GPIO_BSRR_BS0;//ON-OFF OUT
+	GPIOB->BSRR =  GPIO_BSRR_BS1;//ON-OFF OUT
 	//GPIOB->BSRR =  GPIO_BSRR_BR1; //load1
 
 	On_off = 1;
    	//Print_to_USART1_d(On_off,"SelectON:",0);
 	Status_Out = 1;
-	//GPIOA->BSRR =  GPIO_BSRR_BS8;//led out on/off
+	GPIOA->BSRR =  GPIO_BSRR_BS0;//led out on/off
 }
 
 void LOAD_ON()
 {
 	//GPIOB->BSRR =  GPIO_BSRR_BR0;//Diode 1 OUT ON//OFF
 	//GPIOB->BSRR =  GPIO_BSRR_BR0;//ON-OFF OUT
-	GPIOB->BSRR =  GPIO_BSRR_BS1; //load1
+	//GPIOB->BSRR =  GPIO_BSRR_BS1; //load1
 	On_off = 1;
 	Status_Load = 1;
 	//GPIOA->BSRR =  GPIO_BSRR_BS11;//led load on/off
@@ -1920,7 +1924,7 @@ void LOAD_OFF()
 {
 	//GPIOB->BSRR =  GPIO_BSRR_BR0;//Diode 1 OUT ON//OFF
 	//GPIOB->BSRR =  GPIO_BSRR_BR0;//ON-OFF OUT
-	GPIOB->BSRR =  GPIO_BSRR_BR1; //load1
+	//GPIOB->BSRR =  GPIO_BSRR_BR1; //load1
 	On_off = 0;
 	Status_Load = 0;
 	//GPIOA->BSRR =  GPIO_BSRR_BR11;//led load on/off
@@ -1996,13 +2000,14 @@ int main(void)
 	FineKeyState = FINE_KEY_ON;
 	DAC_step = DAC_STEP_FINE;
 	//Light on
-	GPIOB->BSRR =  GPIO_BSRR_BS8;// ON
+	GPIOB->BSRR =  GPIO_BSRR_BS8;// ON (fine)
 	DAC_CurrentCounter = 3000;
-	DAC_VoltageCounter = 1000;
+	DAC_VoltageCounter = 1020;
 	DAC->DHR12R2 = DAC_CurrentCounter;
 	DAC->DHR12R1 = DAC_VoltageCounter;
     while(1)
     {
+    	//OUT_ON();
 
     	Blink_message_counter++;
         Key_Pressed_t Button;
@@ -2102,6 +2107,18 @@ int main(void)
 			MenuSettingsSaveMenuPosWhenOFF(Button);
 		else EnterInMenu_Status = 0;
 
+
+		if (Button == KEY_OUT)
+		{
+	    	if (On_off == 0)
+	    	{
+	    		OUT_ON();
+	    	}
+	    	else
+	    	{
+	    		OUT_OFF();
+	    	}
+		}
 		if (EnterInMenu_Status == 0)
 		{
 			OFF();

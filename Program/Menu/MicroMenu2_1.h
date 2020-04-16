@@ -25,7 +25,8 @@ typedef enum Key_Pressed {
     KEY_UP,
     KEY_VOLT,
     KEY_CURR,
-    KEY_FINE
+    KEY_FINE,
+    KEY_OUT
 }Key_Pressed_t ;
 
  typedef const struct Menu_Item {
