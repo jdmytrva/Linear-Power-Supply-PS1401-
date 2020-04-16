@@ -22,7 +22,7 @@
 //#define VOLTAGE_OFF_SYSTEM 1400
 //#define VOLTAGE_OFF_SYSTEM 700
 
-char Version[] = "PSL 14V1AL v1.02 ";
+char Version[] = "PSL 14V1AL v1.03 ";
 
 
 Key_Pressed_t pressedKey = 0;
@@ -231,7 +231,7 @@ void MenuChargeCC_CV(Key_Pressed_t key)
 	PrintToLCD(itoa_koma(U_OUT,2));
 	PrintToLCD("V  ");
 	lcd_set_xy(6,0);
-	PrintToLCD(itoa(Current_Out));
+	PrintToLCD(itoa(Current_x1));
 	PrintToLCD("m   ");
 
 
@@ -1110,7 +1110,7 @@ void MenuDIAGNOSTIC(Key_Pressed_t key)
 		OUT_ON();
 		lcd_set_xy(0,0);
 		PrintToLCD("I(50)");
-		PrintToLCD(itoa(Current_load));
+		PrintToLCD(itoa(Current_x50));
 		PrintToLCD("mA ");
 		PrintToLCD(itoa(RegularConvData[0]));
 		PrintToLCD("       ");
@@ -1149,66 +1149,66 @@ void MenuDIAGNOSTIC(Key_Pressed_t key)
 		PrintToLCD(itoa(RegularConvData[3]));
 	}
 }
-void MenuCalibration_CURRENT_Out_to_0(Key_Pressed_t key)
+void MenuCalibration_Current_x1_to_0(Key_Pressed_t key)
 {
 		lcd_set_xy(0,0);
 		PrintToLCD(itoa(Current));
 		PrintToLCD("mA >> set 0   ");
 		if (key == KEY_NEXT)
 		{
-			CalibrationData.Calibration0ValueForCurrent = Current_Out;
+			CalibrationData.Calibration0ValueForCurrent = Current_x1;
 			CalibrationWriteToFlash_CRC();
 		}
 }
 
-void MenuCalibration_CURRENT_Load_to_0(Key_Pressed_t key)
+void MenuCalibration_Current_x50_to_0(Key_Pressed_t key)
 {
 	lcd_set_xy(0,0);
 	PrintToLCD(	itoa(Current));
 	PrintToLCD("mA >> set 0   ");
 	if (key == KEY_NEXT)
 	{
-		CalibrationData.Calibration0ValueForCurrent1 = Current_load;
+		CalibrationData.Calibration0ValueForCurrent1 = Current_x50;
 		CalibrationWriteToFlash_CRC();
 	}
 }
-void MenuCalibration_CURRENT_Out(Key_Pressed_t key)
+void MenuCalibration_Current_x1(Key_Pressed_t key)
 {
 	EnterInMenu_Status=1;
 	OUT_ON();
-	if (key == KEY_NEXT) CalibrationData.CalibrationValueForCurrent++;
-	if (key == KEY_BACK) CalibrationData.CalibrationValueForCurrent--;
+	if (key == KEY_NEXT) CalibrationData.CalibrationValueForCurrent_x1++;
+	if (key == KEY_BACK) CalibrationData.CalibrationValueForCurrent_x1--;
 
 	lcd_set_xy(0,0);
-	PrintToLCD(itoa(CalibrationData.CalibrationValueForCurrent));
+	PrintToLCD(itoa(CalibrationData.CalibrationValueForCurrent_x1));
 	PrintToLCD("   ");
 	lcd_set_xy(0,1);
-	PrintToLCD(itoa(Current_Out));
+	PrintToLCD(itoa(Current_x1));
 	PrintToLCD("mA  ");
 }
-void MenuCalibration_CURRENT_Load(Key_Pressed_t key)
+void MenuCalibration_Current_x50(Key_Pressed_t key)
 {
 	EnterInMenu_Status=1;
 	discharge();
-	if (key == KEY_NEXT) CalibrationData.CalibrationValueForCurrent1++;
-	if (key == KEY_BACK) CalibrationData.CalibrationValueForCurrent1--;
+	if (key == KEY_NEXT) CalibrationData.CalibrationValueForCurrent_x50++;
+	if (key == KEY_BACK) CalibrationData.CalibrationValueForCurrent_x50--;
 
 	lcd_set_xy(0,0);
-	PrintToLCD(itoa(CalibrationData.CalibrationValueForCurrent1));
+	PrintToLCD(itoa(CalibrationData.CalibrationValueForCurrent_x50));
 	PrintToLCD("   ");
 	lcd_set_xy(0,1);
-	PrintToLCD(itoa(Current_load));
+	PrintToLCD(itoa(Current_x50));
 	PrintToLCD("mA  ");
 }
 void MenuCalibration_VoltagePS(Key_Pressed_t key)
 {
 	EnterInMenu_Status=1;
 	OUT_ON();
-	if (key == KEY_NEXT) CalibrationData.CalibrationValueForVoltage++;
-	if (key == KEY_BACK) CalibrationData.CalibrationValueForVoltage--;
+	if (key == KEY_NEXT) CalibrationData.CalibrationValueForTemperature++;
+	if (key == KEY_BACK) CalibrationData.CalibrationValueForTemperature--;
 
 	lcd_set_xy(0,0);
-	PrintToLCD(itoa(CalibrationData.CalibrationValueForVoltage));
+	PrintToLCD(itoa(CalibrationData.CalibrationValueForTemperature));
 	PrintToLCD("   ");
 	lcd_set_xy(0,1);
 	PrintToLCD(itoa_koma(U_PS,2));
@@ -1218,11 +1218,11 @@ void MenuCalibration_VoltageOut(Key_Pressed_t key)
 {
 	EnterInMenu_Status=1;
 	OUT_ON();
-	if (key == KEY_NEXT) CalibrationData.CalibrationValueForVoltage1 = CalibrationData.CalibrationValueForVoltage1+10;
-	if (key == KEY_BACK) CalibrationData.CalibrationValueForVoltage1 = CalibrationData.CalibrationValueForVoltage1-10;
+	if (key == KEY_NEXT) CalibrationData.CalibrationValueForU_OUT = CalibrationData.CalibrationValueForU_OUT+10;
+	if (key == KEY_BACK) CalibrationData.CalibrationValueForU_OUT = CalibrationData.CalibrationValueForU_OUT-10;
 
 	lcd_set_xy(0,0);
-	PrintToLCD(itoa(CalibrationData.CalibrationValueForVoltage1));
+	PrintToLCD(itoa(CalibrationData.CalibrationValueForU_OUT));
 	PrintToLCD("   ");
 	lcd_set_xy(0,1);
 	PrintToLCD(itoa_koma(U_OUT,2));
@@ -2070,13 +2070,13 @@ int main(void)
 		else if (Menu_GetCurrentMenu() == &Menu_11_1)
 			MenuLog(Button);
 		else if (Menu_GetCurrentMenu() == &Menu_10_2_1)
-			MenuCalibration_CURRENT_Load_to_0(Button);
+			MenuCalibration_Current_x50_to_0(Button);
 		else if (Menu_GetCurrentMenu() == &Menu_10_1_1)
-			MenuCalibration_CURRENT_Out_to_0(Button);
+			MenuCalibration_Current_x1_to_0(Button);
 		else if (Menu_GetCurrentMenu() == &Menu_10_4_1)
-			MenuCalibration_CURRENT_Load(Button);
+			MenuCalibration_Current_x50(Button);
 		else if (Menu_GetCurrentMenu() == &Menu_10_3_1)
-			MenuCalibration_CURRENT_Out(Button);
+			MenuCalibration_Current_x1(Button);
 		else if (Menu_GetCurrentMenu() == &Menu_10_7_1)
 			MenuCalibration_VoltageIn(Button);
 		else if (Menu_GetCurrentMenu() == &Menu_10_6_1)

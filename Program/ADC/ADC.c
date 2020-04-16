@@ -34,7 +34,7 @@ void ADC1_CH_DMA_Config(void)
 	DMA_InitTypeDef DMA_InitStructure;
 
 	GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_AIN;
-	GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_6 ;
+	GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3 | GPIO_Pin_6 ;
 	GPIO_Init(GPIOA, &GPIO_InitStructure);
 
 
@@ -118,30 +118,26 @@ void TIM3_IRQHandler()
 		DMA_ClearFlag(DMA1_FLAG_TC1);
 		DMA_ClearITPendingBit( DMA1_IT_TC1);
 		DMA_ITConfig(DMA1_Channel1, DMA1_IT_TC1, DISABLE);
-		Ut= (RegularConvData[3] * CalibrationData.CalibrationValueForVoltage) / RegularConvData[4];
-		Temperature_Out = MedianFilter2(Ut);
-		if (U_PS < 3) U_PS = 0;
+
+		Ut= (RegularConvData[3] * CalibrationData.CalibrationValueForTemperature) / RegularConvData[4];
+		Temperature_Out = middle_of_3Imax(Ut);
+
 		U_Controller = 491520 / RegularConvData[4];// Uref V/10;  1200 * 4096/ChVref
-		Ut = (RegularConvData[2] * CalibrationData.CalibrationValueForVoltage1) / RegularConvData[4];
-		U_OUTtmp = MedianFilter(Ut);
 
-		if (U_OUTtmp<3) U_OUTtmp = 0;
+		Ut = (RegularConvData[2] * CalibrationData.CalibrationValueForU_OUT) / RegularConvData[4];
+		U_OUT = MedianFilter(Ut);
 
-		Ut = (RegularConvData[1] * CalibrationData.CalibrationValueForCurrent*10) / RegularConvData[4] ;//  x1
-		Current_Out= MedianFilter1(Ut);
+		Ut = (RegularConvData[1] * CalibrationData.CalibrationValueForCurrent_x1*10) / RegularConvData[4] ;//  x1
+		Current_x1= MedianFilter1(Ut);
 
-		Ut= (RegularConvData[0] * CalibrationData.CalibrationValueForCurrent1*10) / RegularConvData[4] ;//  x50
-		Current_load = middle_of_3Imax(Ut);
+		Ut= (RegularConvData[0] * CalibrationData.CalibrationValueForCurrent_x50*10) / RegularConvData[4] ;//  x50
+		Current_x50 = MedianFilter2(Ut);
 
 
-		if (Current_load<=1000)
-			Current = Current_load;
+		if (Current_x50<=1000)
+			Current = Current_x50;
 		else
-			Current = 10*Current_Out;
-
-
-		U_OUT = U_OUTtmp;
-
+			Current = 10*Current_x1;
 
 		DMA_ITConfig(DMA1_Channel1, DMA1_IT_TC1, ENABLE);
   }

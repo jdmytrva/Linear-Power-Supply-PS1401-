@@ -60,13 +60,13 @@ struct StructCalibrationValuetoSaveInFlash CalibrationDataFactory=
 		ADDRESS_FLASH_CALIBRATTION+4,
 		0,//Calibration0ValueForCurrent1
 		ADDRESS_FLASH_CALIBRATTION+8,
-		279,//CalibrationValueForCurrent x1
+		279,//CalibrationValueForCurrent_x1 x1
 		ADDRESS_FLASH_CALIBRATTION+12,
-		59,//CalibrationValueForCurrent1 x50
+		59,//CalibrationValueForCurrent_x50 x50
 		ADDRESS_FLASH_CALIBRATTION+16,
-		1331,//CalibrationValueForVoltage
+		1331,//CalibrationValueForTemperature
 		ADDRESS_FLASH_CALIBRATTION+20,
-		1245,//CalibrationValueForVoltage1 use
+		1245,//CalibrationValueForU_OUT use
 		ADDRESS_FLASH_CALIBRATTION+24,
 		1331,//CalibrationValueForVoltage2
 		ADDRESS_FLASH_CALIBRATTION+28,
@@ -168,8 +168,8 @@ struct StructValuetoSaveInFlashWhenPowerOFF SaveDataWhenPowerOffFactory=
 
 
 volatile uint16_t U_OUT_ForSetResistance=0;
-volatile int16_t Current_load = 0;
-volatile int16_t Current_Out = 0;
+volatile int16_t Current_x50 = 0;
+volatile int16_t Current_x1 = 0;
 volatile int32_t Temperature_Out = 0;
 
 
@@ -313,10 +313,10 @@ void InfoToUARTBeforeStart(void)
 	Print_to_USART1_d(CalibrationData.CRC_data,"CRC(Calibration) =",0);
 	Print_to_USART1_d(CalibrationData.Calibration0ValueForCurrent ,"Calibration0ValueForCurrent =",0);
 	Print_to_USART1_d(CalibrationData.Calibration0ValueForCurrent1 ,"Calibration0ValueForCurrent1 =",0);
-	Print_to_USART1_d(CalibrationData.CalibrationValueForCurrent ,"CalibrationValueForCurrent =",0);
-	Print_to_USART1_d(CalibrationData.CalibrationValueForCurrent1 ,"CalibrationValueForCurrent1 =",0);
-	Print_to_USART1_d(CalibrationData.CalibrationValueForVoltage ,"CalibrationValueForVoltage =",0);
-	Print_to_USART1_d(CalibrationData.CalibrationValueForVoltage1 ,"CalibrationValueForVoltage1 =",0);
+	Print_to_USART1_d(CalibrationData.CalibrationValueForCurrent_x1 ,"CalibrationValueForCurrent_x1 =",0);
+	Print_to_USART1_d(CalibrationData.CalibrationValueForCurrent_x50 ,"CalibrationValueForCurrent_x50 =",0);
+	Print_to_USART1_d(CalibrationData.CalibrationValueForTemperature ,"CalibrationValueForTemperature =",0);
+	Print_to_USART1_d(CalibrationData.CalibrationValueForU_OUT ,"CalibrationValueForU_OUT =",0);
 	Print_to_USART1_d(CalibrationData.CalibrationValueForVoltage2 ,"CalibrationValueForVoltage2 =",0);
 	Print_to_USART1_d(CalibrationData.ResistanceComp_Ishunt_Wires ,"ResistanceComp_Ishunt_Wires =",0) ;
 	Print_to_USART1_d(CalibrationData.ResistanceComp_MOSFET ,"ResistanceComp_MOSFET =",0) ;

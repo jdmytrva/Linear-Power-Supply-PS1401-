@@ -15,16 +15,16 @@ struct StructCalibrationValuetoSaveInFlash
 	uint32_t Calibration0ValueForCurrent1;
 	uint32_t Calibration0ValueForCurrent1_AddresInEEprom;
 
-	uint32_t CalibrationValueForCurrent;
-	uint32_t CalibrationValueForCurrent_AddresInEEprom;
+	uint32_t CalibrationValueForCurrent_x1;
+	uint32_t CalibrationValueForCurrent_x1_AddresInEEprom;
 
-	uint32_t CalibrationValueForCurrent1;
-	uint32_t CalibrationValueForCurrent1_AddresInEEprom;
+	uint32_t CalibrationValueForCurrent_x50;
+	uint32_t CalibrationValueForCurrent_x11_AddresInEEprom;
 
-	uint32_t CalibrationValueForVoltage;
+	uint32_t CalibrationValueForTemperature;
 	uint32_t CalibrationValueForVoltage_AddresInEEprom;
 
-	uint32_t CalibrationValueForVoltage1;
+	uint32_t CalibrationValueForU_OUT;
 	uint32_t CalibrationValueForVoltage1_AddresInEEprom;
 
 	uint32_t CalibrationValueForVoltage2;
@@ -92,8 +92,8 @@ struct StructValuetoSaveInFlashWhenPowerOFF SaveDataWhenPowerOffFactory;
 //ADC
 volatile uint16_t U_OUT_ForSetResistance;
 volatile int16_t Current_RAW;
-volatile int16_t Current_load ;
-volatile int16_t Current_Out ;
+volatile int16_t Current_x50 ;
+volatile int16_t Current_x1 ;
 volatile int32_t Temperature_Out ;
 #define MAX_LOG_ITEMS 24
 
