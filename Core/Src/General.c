@@ -60,13 +60,13 @@ struct StructCalibrationValuetoSaveInFlash CalibrationDataFactory=
 		ADDRESS_FLASH_CALIBRATTION+4,
 		0,//Calibration0ValueForCurrent1
 		ADDRESS_FLASH_CALIBRATTION+8,
-		141,//CalibrationValueForCurrent Resistor 6.2k || 4.7k  1%
+		279,//CalibrationValueForCurrent_x1 x1
 		ADDRESS_FLASH_CALIBRATTION+12,
-		141,//CalibrationValueForCurrent1 Resistor 6.2k || 4.7k  1%
+		59,//CalibrationValueForCurrent_x50 x50
 		ADDRESS_FLASH_CALIBRATTION+16,
-		1109,//CalibrationValueForVoltage Resistor 8.2k 1%
+		1331,//CalibrationValueForTemperature
 		ADDRESS_FLASH_CALIBRATTION+20,
-		1109,//CalibrationValueForVoltage1 Resistor 8.2k 1%
+		1245,//CalibrationValueForU_OUT use
 		ADDRESS_FLASH_CALIBRATTION+24,
 		1109,//CalibrationValueForVoltage2 Resistor 8.2k 1%
 		ADDRESS_FLASH_CALIBRATTION+28,
@@ -183,6 +183,9 @@ struct StructValuetoSaveInFlashWhenPowerOFF SaveDataWhenPowerOffFactory=
 volatile uint16_t U_OUT_ForSetResistance=0;
 volatile int16_t Current_load = 0;
 volatile int16_t Current_Out = 0;
+volatile int16_t Current_x50 = 0 ;
+volatile int16_t Current_x1 = 0 ;
+volatile int32_t Temperature_Out = 0 ;
 
 struct StructTemperatureLinearTable T_Table []=
 {
@@ -375,10 +378,10 @@ void InfoToUARTBeforeStart(void)
 	logInfoD("CRC(Calibration) =",CalibrationData.CRC_data,0);
 	logInfoD("Calibration0ValueForCurrent =",CalibrationData.Calibration0ValueForCurrent ,0);
 	logInfoD("Calibration0ValueForCurrent1 =",CalibrationData.Calibration0ValueForCurrent1 ,0);
-	logInfoD("CalibrationValueForCurrent =",CalibrationData.CalibrationValueForCurrent ,0);
-	logInfoD("CalibrationValueForCurrent1 =",CalibrationData.CalibrationValueForCurrent1 ,0);
-	logInfoD("CalibrationValueForVoltage =",CalibrationData.CalibrationValueForVoltage ,0);
-	logInfoD("CalibrationValueForVoltage1 =",CalibrationData.CalibrationValueForVoltage1 ,0);
+	logInfoD("CalibrationValueForCurrent_x1 =",CalibrationData.CalibrationValueForCurrent_x1 ,0);
+	logInfoD("CalibrationValueForCurrent_x50 =",CalibrationData.CalibrationValueForCurrent_x50 ,0);
+	logInfoD("CalibrationValueForTemperature =",CalibrationData.CalibrationValueForTemperature ,0);
+	logInfoD("CalibrationValueForU_OUT =",CalibrationData.CalibrationValueForU_OUT ,0);
 	logInfoD("CalibrationValueForVoltage2 =",CalibrationData.CalibrationValueForVoltage2 ,0);
 	logInfoD("ResistanceComp_Ishunt_Wires =",CalibrationData.ResistanceComp_Ishunt_Wires ,0) ;
 	logInfoD("ResistanceComp_MOSFET =",CalibrationData.ResistanceComp_MOSFET ,0) ;

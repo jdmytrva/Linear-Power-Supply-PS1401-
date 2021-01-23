@@ -57,8 +57,8 @@ all: main-build
 main-build: LinearPowerSupply_PS1401mA.elf secondary-outputs
 
 # Tool invocations
-LinearPowerSupply_PS1401mA.elf: $(OBJS) $(USER_OBJS) C:\Users\SF\Project\ (GitHub)\Linear-Power-Supply-PS1401-\STM32F100C8TX_FLASH.ld
-	arm-none-eabi-gcc -o "LinearPowerSupply_PS1401mA.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"C:\Users\SF\Project (GitHub)\Linear-Power-Supply-PS1401-\STM32F100C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="LinearPowerSupply_PS1401mA.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+LinearPowerSupply_PS1401mA.elf: $(OBJS) $(USER_OBJS) C:\Users\Vasyl\Documents\GitHub\Linear-Power-Supply-PS1401-\STM32F100C8TX_FLASH.ld
+	arm-none-eabi-gcc -o "LinearPowerSupply_PS1401mA.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"C:\Users\Vasyl\Documents\GitHub\Linear-Power-Supply-PS1401-\STM32F100C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="LinearPowerSupply_PS1401mA.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

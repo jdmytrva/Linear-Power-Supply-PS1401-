@@ -28,7 +28,7 @@
 
 
 
-#define NUMBER_OF_CHANNELS 8
+#define NUMBER_OF_CHANNELS 6
 __IO uint16_t RegularConvData[NUMBER_OF_CHANNELS] ;
 
 volatile uint16_t U_OUT;
@@ -58,16 +58,17 @@ struct StructCalibrationValuetoSaveInFlash
 	uint32_t Calibration0ValueForCurrent1;
 	uint32_t Calibration0ValueForCurrent1_AddresInEEprom;
 
-	uint32_t CalibrationValueForCurrent;
+	uint32_t CalibrationValueForCurrent_x1;
 	uint32_t CalibrationValueForCurrent_AddresInEEprom;
 
-	uint32_t CalibrationValueForCurrent1;
+	uint32_t CalibrationValueForCurrent_x50;
 	uint32_t CalibrationValueForCurrent1_AddresInEEprom;
 
-	uint32_t CalibrationValueForVoltage;
+
+	uint32_t CalibrationValueForTemperature;
 	uint32_t CalibrationValueForVoltage_AddresInEEprom;
 
-	uint32_t CalibrationValueForVoltage1;
+	uint32_t CalibrationValueForU_OUT;
 	uint32_t CalibrationValueForVoltage1_AddresInEEprom;
 
 	uint32_t CalibrationValueForVoltage2;
@@ -146,6 +147,9 @@ volatile int16_t Current_load ;
 volatile int16_t Current_Out ;
 volatile int32_t Temperature;
 volatile int32_t Rt;
+volatile int16_t Current_x50 ;
+volatile int16_t Current_x1 ;
+volatile int32_t Temperature_Out ;
 
 volatile uint16_t  Count100mSecond;
 volatile uint16_t  Count10mSecond;

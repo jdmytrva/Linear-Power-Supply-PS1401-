@@ -50,9 +50,9 @@ void MenuOption_Enter1(Key_Pressed_t key);
  //       NAME          NEXT,       PREV        PARENT,       CHILD       EnterCallback        SelectCallback         Text
  MENU_ITEM(Menu_10_1,  Menu_10_2,  Menu_10_10, Menu_10,   Menu_10_1_1,   NULL,                NULL,               "CURRENT Out to 0");
  MENU_ITEM(Menu_10_2,  Menu_10_3,  Menu_10_1,  Menu_10,   Menu_10_2_1,   NULL,                NULL,               "CURRENT Load to0");
- MENU_ITEM(Menu_10_3,  Menu_10_4,  Menu_10_2,  Menu_10,   Menu_10_3_1,   NULL,                NULL,               "CURRENT Out     ");
- MENU_ITEM(Menu_10_4,  Menu_10_5,  Menu_10_3,  Menu_10,   Menu_10_4_1,   NULL,                NULL,               "CURRENT Load    ");
- MENU_ITEM(Menu_10_5,  Menu_10_6,  Menu_10_4,  Menu_10,   Menu_10_5_1,   NULL,                NULL,               "Voltage PS      ");
+ MENU_ITEM(Menu_10_3,  Menu_10_4,  Menu_10_2,  Menu_10,   Menu_10_3_1,   NULL,                NULL,               "CURRENT x1      ");
+ MENU_ITEM(Menu_10_4,  Menu_10_5,  Menu_10_3,  Menu_10,   Menu_10_4_1,   NULL,                NULL,               "CURRENT x50     ");
+ MENU_ITEM(Menu_10_5,  Menu_10_6,  Menu_10_4,  Menu_10,   Menu_10_5_1,   NULL,                NULL,               "Voltage Temperat");
  MENU_ITEM(Menu_10_6,  Menu_10_7,  Menu_10_5,  Menu_10,   Menu_10_6_1,   NULL,                NULL,               "Voltage Out     ");
  MENU_ITEM(Menu_10_7,  Menu_10_8,  Menu_10_6,  Menu_10,   Menu_10_7_1,   NULL,                NULL,               "Voltage In      ");
  MENU_ITEM(Menu_10_8,  Menu_10_9,  Menu_10_7,  Menu_10,   Menu_10_8_1,   NULL,                NULL,               "Resist comp 5V1A");

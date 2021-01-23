@@ -156,8 +156,21 @@ uint32_t SelectedOptionValue;
 uint32_t SelectedOptionValue1;
 uint32_t OutStateAfterPowerUp = 1;
 //uint32_t OutState = 0;
+typedef enum FineKeyStatus_S
+{
+	FINE_KEY_OFF = 0,
+	FINE_KEY_ON
+}FineKeyState_t;
 
+FineKeyState_t FineKeyState;
 
+uint32_t timer_tmp = 0;
+
+#define DAC_STEP_FINE 20
+#define DAC_STEP_NORMAL 200
+uint16_t DAC_step = DAC_STEP_NORMAL;
+volatile int16_t DAC_VoltageCounter = 0;
+volatile int16_t DAC_CurrentCounter = 2000;
 //////MENU FUNCTIONS ///////////////MENU FUNCTIONS ///////////////MENU FUNCTIONS /////////
 void Generic_Write(char* Text)
 {
@@ -184,191 +197,108 @@ void MenuPowerSupply(Key_Pressed_t key) //PowerSupply
 {
 	EnterInMenu_Status = 1;
 	lcd_set_xy(0,0);
-	if (On_off == 0)
-	{
-		PrintToLCD(itoa_koma(U_PS,2));
-		PrintToLCD("V  ");
-		lcd_set_xy(7,0);
-		PrintToLCD(itoa(Current));
-		PrintToLCD("mA   ");
-		lcd_set_xy(5,1);
-		PrintToLCD("OFF ");
-	}
-	else
-	{
-		PrintToLCD(itoa_koma(U_OUT,2));
-		PrintToLCD("V  ");
-		lcd_set_xy(7,0);
-		PrintToLCD(itoa(Current));
-		PrintToLCD("mA    ");
-		lcd_set_xy(6,1);
-		PrintToLCD("ON ");
-	}
+	PrintToLCD(itoa_koma(U_OUT,2));
+	PrintToLCD("V  ");
+	lcd_set_xy(7,0);
+	PrintToLCD(itoa(Current));
+	PrintToLCD("mA        ");
 
+
+	if (key == KEY_CURR)
+	{
+		Menu_Navigate(MENU_CHILD);
+		Menu_Navigate(MENU_NEXT);
+		Menu_Navigate(MENU_CHILD);
+	}
     if (key == KEY_NEXT)
     {
-    	if (On_off == 0)
-    		OUT_ON();
-    	else
-    		OUT_OFF();
+    	DAC_VoltageCounter = DAC_VoltageCounter+DAC_step;
+    	if (DAC_VoltageCounter>4095) DAC_VoltageCounter = 4095;
+    	DAC->DHR12R1 = DAC_VoltageCounter;
     }
-    OUTStateAfterPowerUpFunction();
+    if (key == KEY_BACK)
+    {
+    	DAC_VoltageCounter = DAC_VoltageCounter-DAC_step;
+    	if (DAC_VoltageCounter<=0) DAC_VoltageCounter = 0;
+    	DAC->DHR12R1 = DAC_VoltageCounter;
+    }
 
 }
 
 void MenuLoad(Key_Pressed_t key) //Load
 {
 	EnterInMenu_Status = 1;
-	if (key == KEY_NEXT)
+	if (key == KEY_CURR)
 	{
-		if (On_off == 0)
-			LOAD_ON();
-		else
-			LOAD_OFF();
+		Menu_Navigate(MENU_CHILD);
+		Menu_Navigate(MENU_PREVIOUS);
+		Menu_Navigate(MENU_CHILD);
 	}
+
+    if (key == KEY_NEXT)
+    {
+
+    	DAC_CurrentCounter = DAC_CurrentCounter+DAC_step;
+    	if (DAC_CurrentCounter>4095) DAC_CurrentCounter = 4095;
+    	DAC->DHR12R2 = DAC_CurrentCounter;
+    }
+    if (key == KEY_BACK)
+    {
+    	DAC_CurrentCounter = DAC_CurrentCounter-DAC_step;
+    	if (DAC_CurrentCounter<=0) DAC_CurrentCounter = 0;
+    	DAC->DHR12R2 = DAC_CurrentCounter;
+    }
 	lcd_set_xy(0,0);
 	PrintToLCD(itoa_koma(U_OUT,2));
 	PrintToLCD("V ");
-
+	lcd_set_xy(7,0);
 	PrintToLCD(itoa(Current));
-	PrintToLCD("mA    ");
-	if (On_off ==0)
-		{
-			lcd_set_xy(6,1);
-			LcdOutbyNumber(2,1);
-			LcdOutbyNumber(2,1);
-		}
-		else
-			if (Blink_message_counter<=5)
-			{
-				lcd_set_xy(6,1);
-				LcdOutbyNumber(2,1);
-				LcdOutbyNumber(2,1);
-			}
-			else
-			{
-					lcd_set_xy(6,1);
-					LcdOutbyNumber(3,1);
-					LcdOutbyNumber(3,1);
-			}
-		if (Blink_message_counter>10)
-			Blink_message_counter = 0;
+	PrintToLCD("mA   ");
+
+
+	lcd_set_xy(3,1);
+	PrintToLCD("I");
+	PrintToLCD(itoa(DAC_CurrentCounter));
+	PrintToLCD("   ");
 }
 void MenuChargeCC_CV(Key_Pressed_t key)
 {
 	EnterInMenu_Status = 1;
-	if (InitiStatus==0)
+	if (key == KEY_VOLT)
 	{
-		if (U_PS < (SettingsData.MaxVoltage+DELTA_UPS_BAT_MAX))
-		{
-			lcd_set_xy(0,0);
-			PrintToLCD("U(ps)<U(bat.max)");
-			delay_ms(2000);
-			lcd_set_xy(0,0);
-			PrintToLCD("UP U(ps)        ");
-			delay_ms(3000);
-
-		}
-		ChargeStatusForTimer = 0;
-		DisChargeStatusForTimer = 0;
-		BatteryCapacityCharge = 0;
-		InitiStatus = 1;
-		ChargeTimeSec = 0;
+		Menu_Navigate(MENU_CHILD);
+		Menu_Navigate(MENU_PREVIOUS);
+		Menu_Navigate(MENU_PREVIOUS);
+		Menu_Navigate(MENU_CHILD);
 	}
 
-	if ((ChargeTimeSec > ChargeDurationSec)|| (U_OUT> SettingsData.MaxVoltage))
-	{
-		OFF();
-		ChargeStatusForTimer = 0;
-
-	}
-
-
-	#define MAXITEM0 3
-    OUTStateAfterPowerUpFunction();
-	if (key == KEY_NEXT)
-	{
-		if (On_off == 0)
-		{
-			charge();
-			ChargeStatusForTimer = 1;
-		}
-		else
-		{
-			OFF();
-			ChargeStatusForTimer = 0;
-		}
-	}
-	if (key == KEY_BACK)
-	{
-		CountShow--;
-		if (CountShow<0) CountShow=MAXITEM0-1;
-	}
-	if(CountShow == 0)
-	{
-		lcd_set_xy(0,0);
-		if (On_off ==0)
-		{
-			PrintToLCD(itoa_koma(U_PS,2));
-			PrintToLCD("V ");
-			PrintToLCD(itoa_koma(U_OUT,2));
-			PrintToLCD("V     ");
-
-		}
-		else
-		{
-			PrintToLCD(itoa_koma(U_OUT,2));
-			PrintToLCD("V ");
-			PrintToLCD(itoa(Current));
-			PrintToLCD("mA     ");
-		}
-		if (On_off ==0)
-		{
-			lcd_set_xy(7,1);
-			LcdOutbyNumber(0,1);
-		}
-		else
-			if (Blink_message_counter<=5)
-			{
-				lcd_set_xy(7,1);
-				LcdOutbyNumber(0,1);
-			}
-			else
-			{
-					lcd_set_xy(7,1);
-					LcdOutbyNumber(1,1);
-			}
-		if (Blink_message_counter>10)
-			Blink_message_counter = 0;
-	}
-
-	if(CountShow == 1)
-	{
-		lcd_set_xy(0,0);
-		PrintToLCD("T:");
-		PrintToLCD(itoa(SettingsData.ChargeTime));
-		PrintToLCD("h MaxV:");
-		PrintToLCD(itoa_koma(SettingsData.MaxVoltage/10,1));
-		PrintToLCD("V   ");
-	}
-	if(CountShow == 2)
+    if (key == KEY_NEXT)
+    {
+    	DAC_VoltageCounter = DAC_VoltageCounter+DAC_step;
+    	if (DAC_VoltageCounter>4095) DAC_VoltageCounter = 4095;
+    	DAC->DHR12R1 = DAC_VoltageCounter;
+    }
+    if (key == KEY_BACK)
+    {
+    	DAC_VoltageCounter = DAC_VoltageCounter-DAC_step;
+    	if (DAC_VoltageCounter<=0) DAC_VoltageCounter = 0;
+    	DAC->DHR12R1 = DAC_VoltageCounter;
+    }
+	lcd_set_xy(0,0);
+	PrintToLCD(itoa_koma(U_OUT,2));
+	PrintToLCD("V  ");
+	lcd_set_xy(6,0);
+	PrintToLCD(itoa(Current_x1));
+	PrintToLCD("m   ");
 
 
-	{
-		lcd_set_xy(0,0);
-		PrintToLCD("C ");
-		PrintToLCD(itoa(BatteryCapacityCharge/3600));
-		PrintToLCD("mAh     ");
-		lcd_set_xy(3,1);
-		ClockOnLCD_noSec(ChargeTimeSec);
-	}
-	logDebugD("Init status: ",InitiStatus,0);
-	logDebugD("EnterInMenu_Status: ",EnterInMenu_Status,0);
+	lcd_set_xy(3,1);
+	PrintToLCD("V");
+	PrintToLCD(itoa(DAC_VoltageCounter));
+	PrintToLCD("   ");
 
-	logDebugD("Chargestatus timer: ",ChargeStatusForTimer,0);
-	logDebugD("ChargeTimeSec: ",ChargeTimeSec,0);
-	logDebugD("Dischargestatus timer: ",DisChargeStatusForTimer,0);
-	logDebugD("DischargeTimeSec: ",DischargeTimeSec,0);
+
+
 }
 void MenuChargeAdapt(Key_Pressed_t key)
 {
@@ -1265,10 +1195,9 @@ void MenuDIAGNOSTIC(Key_Pressed_t key)
 	}
 	if(CountShow1 == 3)
 	{
-		LOAD_OFF();
 		OUT_ON();
 		lcd_set_xy(0,0);
-		PrintToLCD("Iout ");
+		PrintToLCD("I(1)");
 		PrintToLCD(itoa(Current));
 		PrintToLCD("mA ");
 		PrintToLCD(itoa((RegularConvData[1])));
@@ -1276,11 +1205,10 @@ void MenuDIAGNOSTIC(Key_Pressed_t key)
 	}
 	if(CountShow1 == 4)
 	{
-		OUT_OFF();
-		LOAD_ON();
+		OUT_ON();
 		lcd_set_xy(0,0);
-		PrintToLCD("I(l) ");
-		PrintToLCD(itoa(Current_load));
+		PrintToLCD("I(50)");
+		PrintToLCD(itoa(Current_x50));
 		PrintToLCD("mA ");
 		PrintToLCD(itoa(RegularConvData[0]));
 		PrintToLCD("       ");
@@ -1296,9 +1224,9 @@ void MenuDIAGNOSTIC(Key_Pressed_t key)
 		PrintToLCD("mOm ");
 		PrintToLCD(itoa(CalibrationData.ResistanceComp_MOSFET));
 		PrintToLCD("mOm    ");
-		logDebugD("I: ",Current,0);
-		logDebugD("U_PS: ",U_PS,2);
-		logDebugD("U out: ",U_OUT_ForSetResistance,2);
+		Print_to_USART1_d(Current,"I: ",0);
+		Print_to_USART1_d(U_PS,"U_PS: ",2);
+		Print_to_USART1_d(U_OUT_ForSetResistance,"U out: ",2);
 	}
 	if(CountShow1 == 6)
 	{
@@ -1311,77 +1239,74 @@ void MenuDIAGNOSTIC(Key_Pressed_t key)
 
 	if(CountShow1 == 7)
 	{
-
-		LOAD_OFF();
 		OUT_ON();
 		lcd_set_xy(0,0);
 		PrintToLCD("T=");
-		PrintToLCD(itoa(GetTemperature(Rt)));
-		PrintToLCD("C   ");
-		PrintToLCD(itoa(RegularConvData[5]));
-		PrintToLCD("    ");
+		PrintToLCD(itoa(Temperature_Out));
+		PrintToLCD("C  ");
+		PrintToLCD(itoa(RegularConvData[3]));
 	}
 }
-void MenuCalibration_CURRENT_Out_to_0(Key_Pressed_t key)
+void MenuCalibration_Current_x1_to_0(Key_Pressed_t key)
 {
 		lcd_set_xy(0,0);
 		PrintToLCD(itoa(Current));
 		PrintToLCD("mA >> set 0   ");
 		if (key == KEY_NEXT)
 		{
-			CalibrationData.Calibration0ValueForCurrent = Current_Out;
+			CalibrationData.Calibration0ValueForCurrent = Current_x1;
 			CalibrationWriteToFlash_CRC();
 		}
 }
 
-void MenuCalibration_CURRENT_Load_to_0(Key_Pressed_t key)
+void MenuCalibration_Current_x50_to_0(Key_Pressed_t key)
 {
 	lcd_set_xy(0,0);
 	PrintToLCD(	itoa(Current));
 	PrintToLCD("mA >> set 0   ");
 	if (key == KEY_NEXT)
 	{
-		CalibrationData.Calibration0ValueForCurrent1 = Current_load;
+		CalibrationData.Calibration0ValueForCurrent1 = Current_x50;
 		CalibrationWriteToFlash_CRC();
 	}
 }
-void MenuCalibration_CURRENT_Out(Key_Pressed_t key)
+void MenuCalibration_Current_x1(Key_Pressed_t key)
 {
 	EnterInMenu_Status=1;
 	OUT_ON();
-	if (key == KEY_NEXT) CalibrationData.CalibrationValueForCurrent++;
-	if (key == KEY_BACK) CalibrationData.CalibrationValueForCurrent--;
+	if (key == KEY_NEXT) CalibrationData.CalibrationValueForCurrent_x1++;
+	if (key == KEY_BACK) CalibrationData.CalibrationValueForCurrent_x1--;
 
 	lcd_set_xy(0,0);
-	PrintToLCD(itoa(CalibrationData.CalibrationValueForCurrent));
+	PrintToLCD(itoa(CalibrationData.CalibrationValueForCurrent_x1));
 	PrintToLCD("   ");
 	lcd_set_xy(0,1);
-	PrintToLCD(itoa(Current));
+	PrintToLCD(itoa(Current_x1));
 	PrintToLCD("mA  ");
 }
-void MenuCalibration_CURRENT_Load(Key_Pressed_t key)
+void MenuCalibration_Current_x50(Key_Pressed_t key)
 {
 	EnterInMenu_Status=1;
 	discharge();
-	if (key == KEY_NEXT) CalibrationData.CalibrationValueForCurrent1++;
-	if (key == KEY_BACK) CalibrationData.CalibrationValueForCurrent1--;
+	if (key == KEY_NEXT) CalibrationData.CalibrationValueForCurrent_x50++;
+	if (key == KEY_BACK) CalibrationData.CalibrationValueForCurrent_x50--;
 
 	lcd_set_xy(0,0);
-	PrintToLCD(itoa(CalibrationData.CalibrationValueForCurrent1));
+	PrintToLCD(itoa(CalibrationData.CalibrationValueForCurrent_x50));
 	PrintToLCD("   ");
 	lcd_set_xy(0,1);
-	PrintToLCD(itoa(Current));
+	PrintToLCD(itoa(Current_x50));
 	PrintToLCD("mA  ");
 }
 void MenuCalibration_VoltagePS(Key_Pressed_t key)
 {
 	EnterInMenu_Status=1;
 	OUT_ON();
-	if (key == KEY_NEXT) CalibrationData.CalibrationValueForVoltage++;
-	if (key == KEY_BACK) CalibrationData.CalibrationValueForVoltage--;
+	if (key == KEY_NEXT) CalibrationData.CalibrationValueForTemperature++;
+	if (key == KEY_BACK) CalibrationData.CalibrationValueForTemperature--;
 
 	lcd_set_xy(0,0);
-	PrintToLCD(itoa(CalibrationData.CalibrationValueForVoltage));
+	PrintToLCD(itoa(CalibrationData.CalibrationValueForTemperature));
 	PrintToLCD("   ");
 	lcd_set_xy(0,1);
 	PrintToLCD(itoa_koma(U_PS,2));
@@ -1391,11 +1316,11 @@ void MenuCalibration_VoltageOut(Key_Pressed_t key)
 {
 	EnterInMenu_Status=1;
 	OUT_ON();
-	if (key == KEY_NEXT) CalibrationData.CalibrationValueForVoltage1++;
-	if (key == KEY_BACK) CalibrationData.CalibrationValueForVoltage1--;
+	if (key == KEY_NEXT) CalibrationData.CalibrationValueForU_OUT++;
+	if (key == KEY_BACK) CalibrationData.CalibrationValueForU_OUT--;
 
 	lcd_set_xy(0,0);
-	PrintToLCD(itoa(CalibrationData.CalibrationValueForVoltage1));
+	PrintToLCD(itoa(CalibrationData.CalibrationValueForU_OUT));
 	PrintToLCD("   ");
 	lcd_set_xy(0,1);
 	PrintToLCD(itoa_koma(U_OUT,2));
@@ -1836,53 +1761,105 @@ void MenuOption_Enter1(Key_Pressed_t key)
 	delay_ms(200);
 }
 
+//===================Encoder and buttons=============================
+//11 = 3
+//10 = 2
+//00 = 0
+//01 = 1
+//11 = 3
 
+//>11100001
+//<11010010
+#define SetBit(port, bit) port|= (1<<bit)
+#define ClearBit(port, bit) port&= ~(1<<bit)
 
+//это дл¤ нагл¤дности кода
+#define b00000011 3
+#define b11010010 210
+#define b11100001 225
+
+#define RIGHT_SPIN 0x01
+#define LEFT_SPIN 0xff
+
+Key_Pressed_t bufEnc = 0; //буфер энкодера
 int16_t comp = 0;
-void BUT_Debrief(void)
+
+void ENC_PollEncoder(void)
 {
+	static unsigned char stateEnc; 	//хранит последовательность состо¤ний энкодера
+	unsigned char tmp;
+	unsigned char currentState = 0;
 	Key_Pressed_t key;
-
-  if (!LL_GPIO_IsInputPinSet(GPIOB, LL_GPIO_PIN_4))
-    key = KEY_OK;
-  else if (!LL_GPIO_IsInputPinSet(GPIOB,LL_GPIO_PIN_5))
-    key = KEY_NEXT;
-  else if (!LL_GPIO_IsInputPinSet(GPIOB,LL_GPIO_PIN_6))
-    key = KEY_BACK;
-  else if (!LL_GPIO_IsInputPinSet(GPIOB,LL_GPIO_PIN_7))
-    key = KEY_UP;
-  else {
-    key = 0;
-  }
+	//провер¤ем состо¤ние выводов микроконтроллера
 
 
-  if (key)
-    {
-      if (comp > THRESHOLD2)
-      {
-        comp = THRESHOLD2 - 40;
-        pressedKey = key;
-        return;
-      }
-      else comp++;
+	if (!LL_GPIO_IsInputPinSet(GPIOA, LL_GPIO_PIN_11)) {SetBit(currentState,0);}
+	if (!LL_GPIO_IsInputPinSet(GPIOA, LL_GPIO_PIN_8)) {SetBit(currentState,1);}
+	if (!LL_GPIO_IsInputPinSet(GPIOB, LL_GPIO_PIN_4))
+		key = KEY_OK;
+	else if (!LL_GPIO_IsInputPinSet(GPIOB, LL_GPIO_PIN_5))
+		key = KEY_VOLT;
+	else if (!LL_GPIO_IsInputPinSet(GPIOB, LL_GPIO_PIN_6))
+		key = KEY_CURR;
+	else if (!LL_GPIO_IsInputPinSet(GPIOB, LL_GPIO_PIN_7))
+		key = KEY_FINE;
+	else if (!LL_GPIO_IsInputPinSet(GPIOA, LL_GPIO_PIN_12))
+		key = KEY_OUT;
+	else
+		key = 0;
+	if (key)
+	    {
+	      if (comp > THRESHOLD2)
+	      {
+	        comp = THRESHOLD2 - 40;
+	        bufEnc = key;
+	        return;
+	      }
+	      else comp++;
 
-      if (comp == THRESHOLD)
-      {
-       pressedKey = key;
-        return;
-      }
-    }
-    else comp=0;
+	      if (comp == THRESHOLD)
+	      {
+	    	  bufEnc = key;
+	        return;
+	      }
+	    }
+	    else comp=0;
+	//если равно предыдущему, то выходим
+	tmp = stateEnc;
+	if (currentState == (tmp & b00000011)) return;
+
+	//если не равно, то сдвигаем и сохран¤ем в озу
+	tmp = (tmp<<2)|currentState;
+	stateEnc = tmp;
+
+	//сравниваем получившуюс¤ последовательность
+	if (tmp == b11100001)
+		bufEnc = KEY_NEXT;
+	if (tmp == b11010010)
+		bufEnc = KEY_BACK;
+
+	return;
 }
+
+//функци¤ возвращающа¤ значение буфера энкодера
+//_____________________________________________
+Key_Pressed_t ENC_GetStateEncoder(void)
+{
+	Key_Pressed_t tmp = bufEnc;
+	bufEnc = 0;
+	return tmp;
+}
+
+
+
 
 
 Key_Pressed_t BUT_GetKey(void)
 {
-	if (pressedKey) PowerOffTimesec=0;
-	Key_Pressed_t key = pressedKey;
-	pressedKey = 0;
-	return key;
+	return ENC_GetStateEncoder();
 }
+//end encoder============================================================================
+
 
 
 
@@ -2041,22 +2018,27 @@ GPIOA->BSRR =  GPIO_BSRR_BS5;//load
 void OUT_OFF()
 {
 	//GPIOB->BSRR =  GPIO_BSRR_BR0;//Diode 1 OUT ON//OFF
-	GPIOB->BSRR =  GPIO_BSRR_BR0;//ON-OFF OUT
+	GPIOB->BSRR =  GPIO_BSRR_BR1;//ON-OFF OUT
 	//GPIOB->BSRR =  GPIO_BSRR_BR1; //load1
-	GPIOA->BSRR =  GPIO_BSRR_BR8;//led out on/off
+
+	GPIOA->BSRR =  GPIO_BSRR_BR0;//led out on/off
+
 	On_off = 0;
+   	//Print_to_USART1_d(On_off,"Select OFF:",0);
 	Status_Out = 0;
+
 }
 void OUT_ON()
 {
 	//GPIOB->BSRR =  GPIO_BSRR_BR0;//Diode 1 OUT ON//OFF
-	GPIOB->BSRR =  GPIO_BSRR_BS0;//ON-OFF OUT
+	GPIOB->BSRR =  GPIO_BSRR_BS1;//ON-OFF OUT
 	//GPIOB->BSRR =  GPIO_BSRR_BR1; //load1
-	On_off = 1;
-	Status_Out = 1;
-	GPIOA->BSRR =  GPIO_BSRR_BS8;//led out on/off
-}
 
+	On_off = 1;
+   	//Print_to_USART1_d(On_off,"SelectON:",0);
+	Status_Out = 1;
+	GPIOA->BSRR =  GPIO_BSRR_BS0;//led out on/off
+}
 void LOAD_ON()
 {
 	//GPIOB->BSRR =  GPIO_BSRR_BR0;//Diode 1 OUT ON//OFF
@@ -2091,9 +2073,11 @@ void OUT_ON_OFF_Toggle()
 
 void SysTick_Callback()//1 mc
 {
-	BUT_Debrief();
-	All_OUT_OFF_When_Power_OFF();
+    ENC_PollEncoder();
+//	All_OUT_OFF_When_Power_OFF();
 	TimerForReadyMeasurement_ms++;
+    if (U_OUT > 1000) GPIOB->BSRR =  GPIO_BSRR_BS0;
+    if (U_OUT < 900)  GPIOB->BSRR =  GPIO_BSRR_BR0;
 
 	if (Count10mSecond >= 10)
 	{
@@ -2122,8 +2106,8 @@ void SysTick_Callback()//1 mc
 			Timer_Sec++;
 		time_sec++;
 
-		if (time_sec%2==0) GPIOA->BSRR =  GPIO_BSRR_BS15;
-		else GPIOA->BSRR =  GPIO_BSRR_BR15;
+		//if (time_sec%2==0) GPIOA->BSRR =  GPIO_BSRR_BS15;
+		//else GPIOA->BSRR =  GPIO_BSRR_BR15;
 		//logInfoD("Max was in Buffer :",bufferUart1.tx_buffer_overflow,0);
 
 	}
@@ -2135,14 +2119,13 @@ void SysTick_Callback()//1 mc
 
 void adc_func()
 {
-	//0  I L
-	//1  I out
-	//2 U out
-	//3 U PS
-	//4 U In
-	//5 T
-	//6 temp
-	//7 vref
+
+	//1 0 I X50
+	//2 1 I x1
+	//3 2  U Out
+	//6 3  T
+	//  4 temp
+	//  5 vref
 
 
 	volatile int32_t Ut = 0;
@@ -2153,101 +2136,46 @@ void adc_func()
 	//LL_DMA_DisableChannel(DMA1,LL_DMA_CHANNEL_1);
 
 
-	U_Controller = 491520 / RegularConvData[7];// Uref V/10;  1200 * 4096/ChVref
+	U_Controller = 491520 / RegularConvData[5];// Uref V/10;  1200 * 4096/ChVref
 	//Rt= (RegularConvData[5] *2050 )/ RegularConvData[7];
-	Ut= (RegularConvData[3] * CalibrationData.CalibrationValueForVoltage) / RegularConvData[7];
+	Ut = (RegularConvData[2] * CalibrationData.CalibrationValueForU_OUT) / RegularConvData[5];
 	Ut_m = middle_of_3Umax1(Ut);
 	SumU1 =SumU1 + RunningAverageU1(Ut_m);
 	SumU1Counter ++;
 	if (SumU1Counter >= NUM_READ)
 	{
-		U_PS = SumU1/NUM_READ;
+		U_OUT = SumU1/NUM_READ;
 		SumU1Counter = 0;
 		SumU1 = 0;
 		if (U_PS < 3) U_PS = 0;
 	}
 
-
-	Ut = (RegularConvData[2] * CalibrationData.CalibrationValueForVoltage1) / RegularConvData[7];
-	Ut_m = middle_of_3Umax2(Ut);
-	SumU2 = SumU2 + RunningAverageU2(Ut_m);
-	SumU2Counter ++;
-
-
-
-
-	Ut = (RegularConvData[4] * CalibrationData.CalibrationValueForVoltage2) / RegularConvData[7];
-	Ut_m = middle_of_3Umax3(Ut);
-	SumU3 =SumU3 + RunningAverageU3(Ut_m);
-	SumU3Counter ++;
-	if (SumU3Counter >=NUM_READ)
-	{
-		U_IN = SumU3/NUM_READ;
-		SumU3Counter = 0;
-		SumU3 = 0;
-	}
-
-	It = (RegularConvData[1] * CalibrationData.CalibrationValueForCurrent*10) / RegularConvData[7] ;//  Current A/10
+	It = (RegularConvData[1] * CalibrationData.CalibrationValueForCurrent_x1*10) / RegularConvData[5] ;//  Current A/10
 	It_m = middle_of_3Imax1(It);
 	SumI1 =SumI1 + RunningAverageI1(It_m);
 	SumI1Counter ++;
 	if (SumI1Counter >= NUM_READ)
 	{
-		Current_Out = SumI1/NUM_READ;
+		Current_x1 = SumI1/NUM_READ;
 		SumI1Counter = 0;
 		SumI1 = 0;
 	}
 
-	It= (RegularConvData[0] * CalibrationData.CalibrationValueForCurrent1*10) / RegularConvData[7] ;//  Current A/10
+	It= (RegularConvData[0] * CalibrationData.CalibrationValueForCurrent_x50*10) / RegularConvData[5] ;//  Current A/10
 	It_m = middle_of_3Imax2(It);
 	SumI2 =SumI2 + RunningAverageI2(It_m);
 	SumI2Counter ++;
 	if (SumI2Counter >= NUM_READ)
 	{
-		Current_load = SumI2/NUM_READ;
+		Current_x50 = SumI2/NUM_READ;
 		SumI2Counter = 0;
 		SumI2 = 0;
 	}
-	//if ( (GPIOA->IDR & 112) == 0 )
-	//Print_to_USART1_d(CalibrationData.Calibration0ValueForCurrent1,"cal1 ",0);
-	//Print_to_USART1_d(CalibrationData.Calibration0ValueForCurrent,"cal ",0);
-	if ((GPIOB->IDR & 0x02)==0x02)//if load on
-	{
-		Current =(int32_t)(Current_load-CalibrationData.Calibration0ValueForCurrent1)*(-1) ;//2745;
-	}else
-	{
-		Current = (Current_Out-CalibrationData.Calibration0ValueForCurrent)/1 ;//2745;
-	}
 
-	//Print_to_USART1_d(Current,"I: ",0);
-
-	if (SumU2Counter >= 10)
-	{
-
-		U_OUTtmp = SumU2/10;
-		SumU2 = 0;
-		SumU2Counter = 0;
-
-		U_OUT_ForSetResistance = U_OUTtmp;
-		if (U_OUTtmp<3) U_OUTtmp = 0;
-
-		if (Current>=0)
-		{
-			U_OUTtmp = U_OUTtmp - (int32_t)CalibrationData.ResistanceComp_Ishunt_Wires*Current/10000;
-		}
-		else
-		{
-			U_OUTtmp = U_OUTtmp - (int32_t)CalibrationData.ResistanceComp_Ishunt_Wires*Current/10000;
-			//Print_to_USART1_d(Current,"I: ",0);
-			//P/rint_to_USART1_d(CalibrationData.ResistanceComp_Ishunt_Wires*(-1)*Current/10000,"ResC: ",0);
-		}
-
-		if (U_OUTtmp<3)
-			U_OUTtmp=0;
-
-		U_OUT = U_OUTtmp;
-	}
-
+	if (Current_x50<=1000)
+		Current = Current_x50;
+	else
+		Current = 10*Current_x1;
 
 
 	 //LL_DMA_EnableChannel(DMA1,LL_DMA_CHANNEL_1);
@@ -2303,8 +2231,8 @@ int main(void)
   InitLCD();
   SystemCoreClockUpdate();
   SysTick_Config(SystemCoreClock/1000);//SystemCoreClock/1000 - 1mc
-	GPIOA->BSRR =  GPIO_BSRR_BS15;//Led on Board ON
-	OFF();
+	//GPIOA->BSRR =  GPIO_BSRR_BS15;//Led on Board ON
+	//OFF();
 	LoggingData.RecordsQuantity= 0;
 	uint8_t EEpromReadStatus;
 	PrintToLCD(Version);
@@ -2362,6 +2290,15 @@ int main(void)
 		Menu_Navigate(&Menu_8_1);
 	else Menu_Navigate(&Menu_2_1);
 
+	//fine Key init
+	FineKeyState = FINE_KEY_ON;
+	DAC_step = DAC_STEP_FINE;
+	//Light on
+	GPIOB->BSRR =  GPIO_BSRR_BS8;// ON (fine)
+	DAC_CurrentCounter = 3000;
+	DAC_VoltageCounter = 1020;
+	DAC->DHR12R2 = DAC_CurrentCounter;
+	DAC->DHR12R1 = DAC_VoltageCounter;
 
   /* USER CODE END 2 */
 
@@ -2385,9 +2322,12 @@ int main(void)
 */
   	Blink_message_counter++;
     Key_Pressed_t Button;
-  	Button=BUT_GetKey();
-  	//logDebugD("ADC ",LL_ADC_REG_ReadConversionData12(ADC1),0);
+	Button=ENC_GetStateEncoder();
 
+  	//logDebugD("ADC ",LL_ADC_REG_ReadConversionData12(ADC1),0);
+	if (!LL_GPIO_IsInputPinSet(GPIOA, LL_GPIO_PIN_11)) logDebug("Encoder");
+	logDebugD("ch3 ", RegularConvData[2],0);
+	logDebugD("Button: ",Button,0);
 
 		switch (Button)
 		{
@@ -2407,6 +2347,19 @@ int main(void)
 			case KEY_UP:
 				Menu_Navigate(MENU_PARENT);
 				break;
+			case KEY_FINE:
+				if (FineKeyState == FINE_KEY_OFF)
+				{
+					DAC_step = DAC_STEP_FINE;
+					GPIOB->BSRR =  GPIO_BSRR_BS8;// ON
+					FineKeyState = FINE_KEY_ON;
+				}
+				else
+				{
+					DAC_step = DAC_STEP_NORMAL;
+					FineKeyState = FINE_KEY_OFF;
+					GPIOB->BSRR =  GPIO_BSRR_BR8;//Off
+				}
 
 			default:
 				//logDebug("NO key Pressed");
@@ -2439,14 +2392,14 @@ int main(void)
 		else if (Menu_GetCurrentMenu() == &Menu_11_1)
 			MenuLog(Button);
 		else if (Menu_GetCurrentMenu() == &Menu_10_2_1)
-			MenuCalibration_CURRENT_Load_to_0(Button);
-		else if (Menu_GetCurrentMenu() == &Menu_10_1_1)
-			MenuCalibration_CURRENT_Out_to_0(Button);
-		else if (Menu_GetCurrentMenu() == &Menu_10_4_1)
-			MenuCalibration_CURRENT_Load(Button);
-		else if (Menu_GetCurrentMenu() == &Menu_10_3_1)
-			MenuCalibration_CURRENT_Out(Button);
-		else if (Menu_GetCurrentMenu() == &Menu_10_7_1)
+				MenuCalibration_Current_x50_to_0(Button);
+			else if (Menu_GetCurrentMenu() == &Menu_10_1_1)
+				MenuCalibration_Current_x1_to_0(Button);
+			else if (Menu_GetCurrentMenu() == &Menu_10_4_1)
+				MenuCalibration_Current_x50(Button);
+			else if (Menu_GetCurrentMenu() == &Menu_10_3_1)
+				MenuCalibration_Current_x1(Button);
+			else if (Menu_GetCurrentMenu() == &Menu_10_7_1)
 			MenuCalibration_VoltageIn(Button);
 		else if (Menu_GetCurrentMenu() == &Menu_10_6_1)
 			MenuCalibration_VoltageOut(Button);
@@ -2477,10 +2430,21 @@ int main(void)
 		else if (Menu_GetCurrentMenu() == &Menu_1_SO_1)
 			MenuSettingsOutAfterPowerUp(Button);
 		else EnterInMenu_Status = 0;
+		if (Button == KEY_OUT)
+		{
+	    	if (On_off == 0)
+	    	{
+	    		OUT_ON();
+	    	}
+	    	else
+	    	{
+	    		OUT_OFF();
+	    	}
+		}
 
 		if (EnterInMenu_Status == 0)
 		{
-			OFF();
+			//OFF();
 			InitiStatus = 0;
 			CountShow = 0;
 			SaveDataWhenPowerOff.BatteryCapacityDischargePreviousValue = BatteryCapacityDischargeCurrent;
@@ -2692,7 +2656,11 @@ static void MX_DAC_Init(void)
   LL_DAC_Init(DAC, LL_DAC_CHANNEL_2, &DAC_InitStruct);
   LL_DAC_DisableTrigger(DAC, LL_DAC_CHANNEL_2);
   /* USER CODE BEGIN DAC_Init 2 */
-
+	 /* Включить DAC1 */
+	 DAC->CR |= DAC_CR_EN1;
+	 DAC->CR |= DAC_CR_EN2;
+	 DAC->DHR12R1 = 0;
+	 DAC->DHR12R2 = 0;
   /* USER CODE END DAC_Init 2 */
 
 }
