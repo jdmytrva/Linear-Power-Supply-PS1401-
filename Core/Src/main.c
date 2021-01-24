@@ -1962,58 +1962,29 @@ void All_OUT_OFF_When_Power_OFF()
 }
 void charge()
 {
-	LOAD_OFF();
-	OUT_ON();
-	delay_ms(50);
+
 }
 
 void discharge()
 {
-	OUT_OFF();
-	LOAD_ON();
-	delay_ms(50);
+
 
 }
-int8_t ChargeDischargeState = 0;
+
 void charge1()//ChargeDischargeState = 1
 {
-	if (ChargeDischargeState !=1)
-	{
-		ChargeDischargeState = 1;
-		LOAD_OFF();
-		OUT_ON();
-		TimerForReadyMeasurement_ms = 0;
-		delay_ms(50);
-		logDebug("Charge");
-	}
+
 }
 
 void discharge1()
 {
-	if (ChargeDischargeState !=2)
-	{
-		ChargeDischargeState = 2;
-		OUT_OFF();
-		LOAD_ON();
-		TimerForReadyMeasurement_ms = 0;
-		delay_ms(50);
-		logDebug("DIsCharge");
-	}
+
 }
 void OFF()
 {
-	LOAD_OFF();
-	OUT_OFF();
-}
-/*
-GPIOB->BSRR =  GPIO_BSRR_BS0;//Diode 1 OUT ON//OFF
-GPIOA->BSRR =  GPIO_BSRR_BS8;//Diode 2 Load on/OFF
 
-GPIOA->BSRR =  GPIO_BSRR_BS1;//Fan
-GPIOA->BSRR =  GPIO_BSRR_BS6;//ON-OFF OUT
-GPIOA->BSRR =  GPIO_BSRR_BS4; //load
-GPIOA->BSRR =  GPIO_BSRR_BS5;//load
-*/
+}
+
 
 void OUT_OFF()
 {
@@ -2041,35 +2012,14 @@ void OUT_ON()
 }
 void LOAD_ON()
 {
-	//GPIOB->BSRR =  GPIO_BSRR_BR0;//Diode 1 OUT ON//OFF
-	//GPIOB->BSRR =  GPIO_BSRR_BR0;//ON-OFF OUT
-	GPIOB->BSRR =  GPIO_BSRR_BS1; //load1
-	On_off = 1;
-	Status_Load = 1;
-	GPIOA->BSRR =  GPIO_BSRR_BS11;//led load on/off
+
 }
 
 void LOAD_OFF()
 {
-	//GPIOB->BSRR =  GPIO_BSRR_BR0;//Diode 1 OUT ON//OFF
-	//GPIOB->BSRR =  GPIO_BSRR_BR0;//ON-OFF OUT
-	GPIOB->BSRR =  GPIO_BSRR_BR1; //load1
-	On_off = 0;
-	Status_Load = 0;
-	GPIOA->BSRR =  GPIO_BSRR_BR11;//led load on/off
+
 }
-void LOAD_ON_OFF_Toggle()
-{
-	if (Status_Load == 0)
-		LOAD_ON();
-	else LOAD_OFF();
-}
-void OUT_ON_OFF_Toggle()
-{
-	if (Status_Out ==0)
-		OUT_ON();
-	else OUT_OFF();
-}
+
 
 void SysTick_Callback()//1 mc
 {
@@ -2447,9 +2397,6 @@ int main(void)
 			//OFF();
 			InitiStatus = 0;
 			CountShow = 0;
-			SaveDataWhenPowerOff.BatteryCapacityDischargePreviousValue = BatteryCapacityDischargeCurrent;
-			DischargeTimeSec_Previous = DischargeTimeSec;
-			ChargeDischargeState = 0;
 			OutStateAfterPowerUp = 1;
 		}
 	    //Temperature = GetTemperature(Rt);
